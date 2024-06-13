@@ -1,27 +1,62 @@
 # DisenaTuCursoDocente
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 14.1.1.
+Código fuente de una herramienta tecnológica que brinda apoyo a los docentes en el diseño de cursos de enseñanza superior. La herramienta proporciona un espacio tecnológico con textos de ayuda y sugerencias que acompañan al docente en el proceso, permitiendo la personalización de los cursos según las necesidades de cada institución.
 
-## Development server
+## Configurar ambiente local
+Para instalar las dependencias del proyecto, ejecutar el comando:
+npm ci
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The application will automatically reload if you change any of the source files.
+Si existe el archivo BanderaDesarrollo, Backend.js escribe en src/assets/ que es de donde AplicacionAngular lee
+AMBIENTE DESA
+.
+├── src/
+│   ├── AplicacionAngular (ng serve)
+│   └── assets/
+│       ├── files/
+│       ├── js/
+│       ├── schemas/
+│       └── puerto
+├── BanderaDesarrollo
+├── Backend.js (node Backend.js)
+└── dist/
+    └── disena-tu-curso-docente/
+        └── assets/
+            └── schemasData/
 
-## Code scaffolding
+AMBIENTE PROD
+.
+└── disena-tu-curso-docente-win32-x64/
+    ├── disena-tu-curso-docente.exe
+    └── resources/
+        └── app/
+            ├── ElectronEntry.js
+            ├── Backend.js
+            └── dist/
+                └── disena-tu-curso-docente/
+                    ├── AplicacionAngular
+                    └── assets/
+                        ├── files/
+                        ├── js/
+                        ├── schemasData/
+                        ├── schemas/
+                        └── puerto
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
 
-## Build
+## Compilar Cliente Desktop
+Paso 1: Copiar carpeta del proyecto a C:
+Esto se debe a que si se compila desde una ruta mas "adentro", el Comando 2 falla porque intenta por código
+crear archivos con una ruta absoluta que tiene más de 238 caracteres (limitante de Windows).
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory.
+Comando 1: Compila la solución Angular y la guarda en DisenaTuCursoDocente\dist\
+ng build --configuration production --base-href ./
 
-## Running unit tests
+Comando 2: Compila la solución Electron y la guarda en DisenaTuCursoDocente\out\
+npm run make
 
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
-
-## Running end-to-end tests
-
-Run `ng e2e` to execute the end-to-end tests via a platform of your choice. To use this command, you need to first add a package that implements end-to-end testing capabilities.
-
-## Further help
-
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.io/cli) page.
+Paso 2: Eliminar archivos no necesarios para el funcionamiento del compilado
+En out\disena-tu-curso-docente-win32-x64\resources\app\ dejar solo:
+    dist
+    ElectronEntry.js
+    Backend.js
+    package.json
+    loading.html

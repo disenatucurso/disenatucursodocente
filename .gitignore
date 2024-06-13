@@ -2,27 +2,15 @@
 
 # Compiled output
 
-!/dist/
+# Nuestros Ignores
 /dist/*
-!/dist/disena-tu-curso-docente/
-/dist/disena-tu-curso-docente/*
-!/dist/disena-tu-curso-docente/assets/
-/dist/disena-tu-curso-docente/assets/*
-!/dist/disena-tu-curso-docente/assets/schemasData/
-/dist/disena-tu-curso-docente/assets/schemasData/*
-!/dist/disena-tu-curso-docente/assets/schemasData/.gitkeep
-
-!/dist/disena-tu-curso-docente/assets/files/
-/dist/disena-tu-curso-docente/assets/files/*
-!/dist/disena-tu-curso-docente/assets/files/.gitkeep
-
 /tmp
 /out-tsc
 /bazel-out
 /out
 /src/assets/puerto
-/src/assets/files/*
-!/src/assets/files/.gitkeep
+/src/assets/schemasData/*
+!/src/assets/schemasData/.gitkeep
 
 # Node
 /node_modules
