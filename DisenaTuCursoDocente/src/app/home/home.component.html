@@ -1,0 +1,159 @@
+<!-- <p>-------------------- ALERTAS --------------------</p> -->
+<ngb-alert [dismissible]="true" type='danger'>
+  <strong>Ups! Ha ocurrido un error</strong>
+</ngb-alert>
+<!-- cabezal -->
+<header class="ps-4 pt-2 container" *ngIf="!this.initialSchemaService.loadedData">
+  <!-- <p>1</p> -->
+  <div class="d-flex flex-row border-bottom justify-content-between">
+    <div class="d-flex flex-row align-items-center">
+      <i class="bi bi-mortarboard-fill p-2" style="font-size: 1.8rem;"></i>
+      <h1 class="p-2 fw-bolder">Inicio</h1>
+    </div>
+
+  </div>
+  <!-- <p>1</p> -->
+</header>
+
+
+<section class="container d-flex align-items-center row m-auto">
+  <!-- <p>3</p> -->
+  <div class="p-4">
+    <div *ngIf="!this.initialSchemaService.allData || this.initialSchemaService.allData.length == 0">
+      <h2 class="p-2 fw-bolder text-center opacity-75 p-4 m-auto" style="max-width: 50ch;">¡Hola!</h2>
+      <img src="assets/img/empty_home.svg" alt="Bienvenido/a" class="d-block m-auto img-empty">
+      <h2 class="p-2 fw-bolder text-center opacity-75 p-4 m-auto" style="max-width: 50ch;">Aquí veras tus cursos,
+        ¿Comenzamos?</h2>
+    </div>
+
+    <div class="container">
+      <div class="row ">
+        <div class="col-4">
+          <div class="card l-bg-blue-dark" (click)="openModal()">
+            <div class="card-statistic-3 p-4">
+              <div class="card-icon card-icon-large">
+                <i class="fas bi bi-plus-circle-dotted  px-2"></i>
+              </div>
+              <div class="mb-4">
+                <h5 class="mb-0">Crear curso</h5>
+              </div>
+              <div class="row align-items-center mb-2 d-flex">
+                <div class="text-right small">
+                  <span>Crea y personaliza tu curso desde tu computadora</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-4">
+          <div class="card l-bg-green-dark" (click)="openModalLogin()">
+            <div class="card-statistic-3 p-4">
+              <div class="card-icon card-icon-large">
+                <i class="fas bi bi-cloud-arrow-down  px-2"></i>
+              </div>
+              <div class="mb-4">
+                <h5 class="mb-0">Ver cursos en línea</h5>
+              </div>
+              <div class="row align-items-center mb-2 d-flex">
+                <div class="text-right small">
+                  <span>Ver y descargar diseños de cursos desde un servidor</span>
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </div>
+        <div class="col-4">
+          <div class="card l-bg-orange-dark" (click)="fileUpload.click()">
+            <div class="card-statistic-3 p-4">
+              <div class="card-icon card-icon-large">
+                <i class="fas bi bi-box-arrow-in-up px-2"></i>
+              </div>
+              <div class="mb-4">
+                <h5 class=" mb-0">Importar cursos</h5>
+              </div>
+              <div class="row align-items-center mb-2 d-flex">
+                <div class="text-right small">
+                  <span>Cargar en tu computadora un diseño de curso</span>
+                </div>
+              </div>
+              <input type="file" class="file-upload" onclick="this.value = null" (change)="importarCurso($event)"
+                accept=".json" #fileUpload>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- <p>3</p> -->
+</section>
+
+
+<!-- Mis cursos -->
+<section class="container border-bottom"
+  *ngIf="this.initialSchemaService.allData && !this.initialSchemaService.loadedData && this.initialSchemaService.allData.length> 0 ">
+  <!-- <p>4</p> -->
+  <div class="container-card">
+    <div class="container">
+      <h3 class="opacity-75">Mis cursos</h3>
+      <div class="row">
+        <div class="col-md-4 mt-4" *ngFor="let cursos of initialSchemaService.allData" (click)="cardClick(cursos.id)">
+          <!-- (click)="cardClick(cursos.id)" -->
+          <div class="card cursor-pointer">
+            <div class="card-title">
+              <div class="d-flex align-items-center">
+                <h5>{{cursos.nombreCurso}}</h5>
+                <i class="bi bi-pencil-fill p-2" style="font-size: 10px; opacity: .6;" title="Editar nombre"
+                  (click)="editarNombre(cursos,$event)"></i>
+              </div>
+              <small class="m-0">Autor: {{cursos.versiones.at(-1)?.autor}}</small>
+
+            </div>
+            <div class="card-img-containter">
+              <img src="assets/img/empty_card_cursos.svg" class="card-img" alt="Card cursos" *ngIf="cursos?.idGlobal == null" />
+              <img src="assets/img/empty_card_cursos_servidor.svg" class="card-img" alt="Card cursos" *ngIf="cursos?.idGlobal && cursos?.idGlobal !== null" />
+            </div>
+
+            <div class="card-body">
+              <div class="d-flex flex-column">
+                <small>Version: {{cursos.versiones.at(-1)?.version}}</small>
+                <small>Fecha de creación: {{cursos.versiones.at(-1)?.fechaCreacion | date:'yyyy-MM-dd'}}</small>
+                <small>Última modificación: {{cursos.versiones.at(-1)?.fechaModificacion | date:'yyyy-MM-dd' }}</small>
+                <small *ngIf="cursos?.idGlobal && cursos?.idGlobal !== null">Institución: {{cursos?.institucion}}</small>
+              </div>
+              <div class="d-flex" *ngIf="cursos?.idGlobal == null">
+                <button class="btn btn-outline-primary small mt-2" style="font-size: 12px;" type="button" (click)="subirPrimeraVez(cursos.id,$event)">
+                    <i class="bi bi-cloud-upload-fill" style="margin-right: 0.25rem;"></i> SUBIR A SERVIDOR
+                </button>
+              </div>
+              <div class="d-flex" *ngIf="cursos?.idGlobal && cursos?.idGlobal !== null">
+                <button class="btn btn-outline-primary small mt-2" style="font-size: 12px;" type="button" (click)="subirCambios(cursos.id,$event)">
+                    <i class="bi bi-arrow-up-circle-fill" style="margin-right: 0.25rem;"></i> SUBIR MIS CAMBIOS
+                </button>
+              </div>
+
+
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- <p>4</p> -->
+</section>
+
+<!-- cursos compartidos conmigo -->
+<section class="container" *ngIf="this.initialSchemaService.allData && !this.initialSchemaService.loadedData">
+  <!-- <p>5</p> -->
+</section>
+
+<footer class="bd-footer bg-light" style="position: relative;">
+  <div class="container py-3">
+    <div class="link-hover cursor-pointer text-primary" (click)="cardReporte($event)">
+      <i class="bi bi-chat-left-text px-2"></i>
+      ¿Tienes alguna incidencia, sugerencia o comentario sobre el software? ¡Haznos saber! Haz clic aquí para enviar tus
+      comentarios.
+    </div>
+  </div>
+  <span class="small" style="position: absolute; right: 10px; bottom: 16px; opacity: 0.5;">v2.0</span>
+</footer>

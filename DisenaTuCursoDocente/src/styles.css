@@ -1,1 +1,132 @@
-/* You can add global styles to this file, and also import other style files */
+@import "~bootstrap/dist/css/bootstrap.css";
+@import "bootstrap-icons/font/bootstrap-icons.css";
+@font-face {
+    font-family: 'Raleway';
+    src: url('./assets/fonts/Raleway-Italic.ttf');
+    src: url('./assets/fonts/Raleway-Medium.ttf');
+}
+
+* {
+    font-family: "Raleway";
+}
+
+
+/*Grafo*/
+
+#main {
+    overflow: hidden;
+    position: relative;
+}
+
+.nodes circle {
+    stroke-width: 1;
+    stroke: white;
+}
+
+.links {
+    stroke-width: 2;
+    stroke: #dcdddd;
+}
+
+.label {
+    color: #f0f0f0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    /*height: calc(100% - .9em);*/
+    width: 100%;
+    font-weight: 500;
+}
+
+foreignObject {
+    pointer-events: none;
+}
+
+.triangle {
+    width: 0;
+    height: 0;
+    border-left: 250px solid transparent;
+    border-right: 250px solid transparent;
+    border-bottom: 250px solid #dcdddd;
+    top: 200px;
+    position: absolute;
+    left: 200px;
+    z-index: -1;
+}
+
+.triangle-title {
+    font-weight: 600;
+    opacity: .8;
+    font-size: 16px;
+    padding: 4px 0px
+}
+
+.triangle-container {
+    position: relative;
+    width: 500px;
+    height: 330px;
+    text-align: center;
+    left: -250px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+
+.triangle-description {
+    font-weight: 500;
+    opacity: .8;
+    font-size: 13px;
+    max-width: 235px;
+    line-height: 1.2;
+}
+
+.chart-container {
+    position: relative;
+}
+
+
+/* custom multiple checkbox */
+
+.mat-primary .mat-option.mat-selected:not(.mat-option-disabled) {
+    color: var(--bs-blue) !important;
+}
+
+.mat-primary .mat-pseudo-checkbox-checked {
+    background: var(--bs-blue) !important;
+}
+
+.mat-form-field.mat-focused .mat-form-field-ripple {
+    background: var(--bs-blue) !important;
+}
+
+.mat-form-field {
+    display: block !important;
+}
+
+.mat-form-field-label-wrapper {
+    display: none !important;
+}
+
+.mat-form-field-infix {
+    border-top: none !important;
+}
+
+.mat-form-field-appearance-fill .mat-form-field-infix {
+    padding-bottom: .25em !important;
+}
+
+.mat-form-field-appearance-fill .mat-form-field-flex {
+    background-color: transparent !important;
+    border: 1px solid #ced4da;
+    border-radius: 0.375rem !important;
+    padding: 0.35em 0.75em 0.35em 0.75em !important;
+}
+
+.mat-form-field-underline {
+    display: none !important;
+}
+
+.mat-form-field-appearance-fill .mat-select-arrow-wrapper {
+    margin-top: 12px;
+}

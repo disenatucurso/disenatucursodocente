@@ -2,37 +2,46 @@ export interface Esquema{
     etapas:Etapa[];
     version:number;
     institucion:string;
+    autor: string;
     gruposDatosFijos:GrupoDatoFijo[];
     contenidoCondicional:ContenidoCondicional[];
+    constantes:Constante[];
 }
 
-interface ContenidoCondicional{
+export interface Constante{
+    id:number;
+    valor:number;
+    descripcion:string;
+}
+
+export interface ContenidoCondicional{
     id:number;
     herencia:number;
     muestroSi:DependenciaDeDatos;
-    filaDatos:FilaDatos[];
+    filasDatos:FilaDatos[];
 }
 
-interface Etapa {
+export interface Etapa {
     id:number;
     nombre:string;
+    descripcion:string;
     grupos:Grupo[];
 }
 
-interface GrupoDatoFijo{
+export interface GrupoDatoFijo{
     id:number;
     nombre:string;
     opciones:OpcionSelect[];
 }
 
-interface OpcionSelect{
+export interface OpcionSelect{
     id:number;
     idGrupo:number;
     valor:string;
     muestroSi:DependenciaDeDatos;
 }
 
-interface Grupo{
+export interface Grupo{
     id:number;
     nombre:string;
     ubicacion:Ubicacion;
@@ -40,14 +49,14 @@ interface Grupo{
     atributos:Atributo[];
 }
 
-interface Ubicacion{
+export interface Ubicacion{
     idEtapa:number;
     idGrupo:number;
     idAtributo:number;
-    idDato:number[];
+    idDato:number[] | null;
 }
 
-interface Atributo{
+export interface Atributo{
     id:number;
     nombre:string;
     ubicacion:Ubicacion;
@@ -60,39 +69,48 @@ interface Atributo{
     filasDatos:FilaDatos[];
 }
 
-interface ComentarioPrivado{
-    autor:string;
-    fecha:Date;
-    valor:string;
+export interface ComentarioPrivado{
+    autor:string| undefined;
+    fecha:number | null;
+    valor:string| null;
 }
 
-interface Dato{
+export interface Dato{
     id:number;
     nombre:string;
     ubicacion:Ubicacion;
     herencia:Ubicacion;
     ayuda:string;
     tipo:string;
-        //'selectFijoUnico'
-        //'selectFijoMultiple'
-        //'selectUsuarioUnico'
-        //'selectUsuarioMultiple'
+    computo:Computo;
     opciones:Opciones;
     habilitadoSi:DependenciaDeDatos;
     multiInstanciable:boolean;
     idContenidoCondicional:number[];
-    tamaño:number;
+    tamanio:number;
     filasDatos:FilaDatos[];
 }
 
-interface Opciones{
+export interface Computo{
+    //operacion puede ser: '+','-','*','/'
+    //la operacion a realizar es op1 {operacion} op2
+    operacion:string[];
+    //Si Ubicacion es multiInstanciable, se suman los valores
+    //de todas sus instancias previo a realizar la operacion
+    op1:number | Ubicacion;
+    //number indica ID de Constante
+    op2:number | Ubicacion;
+    op3:number | Ubicacion;
+}
+
+export interface Opciones{
     //Las opciones referencian a un conjunto de Datos de usuario (referencia)
     //O las opciones son un GrupoDatoFijo (idGrupoDatoFijo)
     referencia:Ubicacion;
     idGrupoDatoFijo:number;
 }
 
-interface DependenciaDeDatos{
+export interface DependenciaDeDatos{
     referencia:Ubicacion;
     valorSeleccionado:{
         idGrupoDatoFijo:number;
@@ -100,11 +118,11 @@ interface DependenciaDeDatos{
     }
 }
 
-interface FilaDatos{
+export interface FilaDatos{
     datos:Dato[]
 }
 
-interface PuntoCritico{
+export interface PuntoCritico{
     normativa:string;
     informacionAmpliatoria:string;
     aporteConceptual:string;

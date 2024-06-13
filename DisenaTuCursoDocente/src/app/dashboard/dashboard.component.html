@@ -1,0 +1,106 @@
+<!-- cabezal -->
+<header *ngIf="this.initialSchemaService.loadedData" class="container d-flex flex-row border-bottom justify-content-between">
+    <div class="d-flex flex-row align-items-center">
+        <i class="bi bi-mortarboard-fill p-2" style="font-size: 1.8rem;"></i>
+        <h1 class="p-2 fw-bolder">{{initialSchemaService.loadedData.nombreCurso }}</h1>
+    </div>
+    <div class="text-center d-flex align-items-center" *ngIf="this.initialSchemaService.allData">
+        <div>
+            <button class="btn btn-primary btn-rounded background-primary m-2" (click)="goHome()" role="button" title="Ir al inicio">
+            <i class="bi bi-house me-2"></i>INICIO</button>
+        </div>
+    </div>
+</header>
+
+<!-- zona del grafo -->
+<div class="chart-container" style="max-width: 1000px; margin: auto; left:40px;">
+    <div id="triangle" class="triangle">
+        <div class="triangle-container">
+            <span id="triangle-title" class="triangle-title"></span>
+            <span id="triangle-description" class="triangle-description"></span>
+        </div>
+    </div>
+</div>
+
+<div *ngIf="this.initialSchemaService.loadedData">
+    <!-- botones -->
+    <div class="container text-center mb-3">
+        <div>
+            <button class="btn btn-primary background-primary m-2 btn-outline-expand dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+            <i class="bi bi-cloud-arrow-down me-2"></i>EXPORTAR</button>
+            <ul class="dropdown-menu">
+                <li><button class="dropdown-item" (click)="descargarCurso($event)">Exportar curso</button></li>
+                <li><button class="dropdown-item" (click)="descargarPDF($event)">Descargar cómo PDF</button></li>
+            </ul>
+            <!-- por ahora no va el compartir -->
+            <!-- <a class="btn btn-primary background-primary m-2" href="#!" role="button">
+                <i class="bi bi-share-fill me-2"></i>COMPARTIR
+            </a> -->
+            <a class="btn btn-primary background-primary m-2" role="button" (click)="invertirMostrarVersiones()">
+                <i class="bi bi-clock-history me-2"></i>VERSIONADO
+            </a>
+            <!--<a title="Crea una nueva versión a partir de la version actual" class="btn btn-primary background-primary m-2" role="button" (click)="openModal('nuevo')">
+                <i class="bi bi-plus-circle me-2"></i>NUEVA VERSIÓN
+            </a>-->
+            <a class="btn btn-outline-primary m-2" role="button" (click)="openModal('eliminar')">
+                <i class="bi bi-trash-fill  me-2"></i>ELIMINAR CURSO
+            </a>
+        </div>
+    </div>
+</div>
+
+<!-- -------------------- ZONA VERSIONES -------------------- -->
+<div class="'container p-4" *ngIf="this.mostrarUIVersiones">
+    <div class="card container p-4 mb-4">
+        <h3 class="mb-4">Administrar Versiones</h3>
+        <ul class="list-group">
+            <li *ngFor="let version of this.initialSchemaService.loadedData?.versiones" class="list-group-item">
+                <div class="row">
+                    <div class="col">
+                        <span style="margin-right: 8px;">{{ version.nombre }}</span>
+                        <span *ngIf="version.version == this.versionSeleccionada!.version" class="badge bg-primary m-2">Version actual</span>
+                        <span style="opacity: .6; font-size: 11px;">‧ {{ version.fechaCreacion| date:'yyyy-MM-dd' }} ‧</span>
+                    </div>
+                    <div class="col text-end">
+                        <!-- Si la Row es de la versión seleccionada -->
+                        <ng-container *ngIf="version.version == this.versionSeleccionada!.version">
+
+                            <button disabled class="btn btn-outline-secondary m-2" style="font-size: 10px;" title="Restaurar esta versión y convertir en la version activa.">
+                                CARGAR VERSIÓN</button>
+
+                            <button (click)="openModal('nuevo')" class="btn btn-outline-primary m-2" style="font-size: 10px;" title="Crea una nueva versión a partir de la version actual">
+                                <i class="bi bi-plus-circle me-2"></i>
+                                NUEVA VERSIÓN
+                            </button>
+                        </ng-container>
+                        <!-- Si la Row es de una versión NO seleccionada -->
+                        <ng-container *ngIf="version.version != this.versionSeleccionada!.version">
+                            <button (click)="seleccionarVersion(version.version, $event)" class="btn btn-outline-primary m-2" style="font-size: 10px;" title="Restaurar esta versión y convertir en la version activa.">
+                                CARGAR VERSIÓN</button>
+
+                            <button disabled class="btn btn-outline-secondary m-2" style="font-size: 10px;" title="Crea una nueva versión a partir de la version actual">
+                                <i class="bi bi-plus-circle me-2"></i>
+                                NUEVA VERSIÓN
+                            </button>
+                        </ng-container>
+                    </div>
+                </div>
+            </li>
+        </ul>
+        <button class="btn btn-primary background-primary mt-4" style="width: fit-content;" (click)="invertirMostrarVersiones()">CANCELAR</button>
+    </div>
+</div>
+
+<!-- -------------------- ZONA CONTENIDO GRUPO -------------------- -->
+<div class="'container p-4" *ngIf="grupoCargado && !this.mostrarUIVersiones">
+    <app-grupo [grupo]="grupoCargado" [versionSeleccionada]="versionSeleccionada"></app-grupo>
+</div>
+<div class="'container" *ngIf="!grupoCargado && !this.mostrarUIVersiones">
+    <div class="card container p-4 mb-4">
+        <div class="card-body ">
+            <h2 class="p-2 fw-bolder text-center opacity-75 p-4 m-auto" style="max-width: 50ch;">En este espacio podrás editar tu curso luego de seleccionar la etapa en el menú</h2>
+            <img src="assets/img/empty_espaciotrabajo.svg" alt="" style="max-width: 500px;margin: auto;display: block;">
+        </div>
+    </div>
+</div>
+<!-- ------------------ END ZONA CONTENIDO GRUPO ------------------ -->
