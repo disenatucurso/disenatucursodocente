@@ -115,7 +115,8 @@ export class cursosServidorComponent {
       });
 
       if (response.ok) {
-        this.servidor = await response.json();
+        var respuesta =  await response.json();
+        this.servidor = respuesta.nombre;
       } else {
         console.log('Ha ocurrido un error:', response.status);
         alert('Error en la búsqueda. Intente luego o consulte al administrador del sistema.');
