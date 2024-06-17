@@ -22,18 +22,20 @@ export class cursosServidorComponent {
               private route: ActivatedRoute) {}
 
   ngOnInit(): void {
+    //remuevo el mensaje de error que se carga por defecto, se muestra poniendole la clase .show
+    const alert = document.querySelector('ngb-alert')
+    if (alert)
+      alert.classList.remove('show')
+
     this.route.queryParams.subscribe(params => {
       this.token = params['token'];
       this.urlServidor = params['servidor'];
       console.log('Token:', this.token);
-      console.log('URL del servidor:', this.servidor);
+      console.log('URL del servidor:', this.urlServidor);
     });
 
     this.getNombre(this.urlServidor);
 
-    const alert = document.querySelector('ngb-alert')
-    if(alert)
-      alert.classList.remove('show');
   }
 
   onSubmit(event: Event) {
@@ -43,7 +45,7 @@ export class cursosServidorComponent {
 
   async buscarCurso(termino: string) {
     console.log('Buscando curso con término:', termino);
-    const apiUrl = `${this.servidor}/api/listarCursos?criterio=${encodeURIComponent(termino)}`;
+    const apiUrl = `${this.urlServidor}/api/listarCursos?criterio=${encodeURIComponent(termino)}`;
 
     console.log(apiUrl);
 
@@ -71,7 +73,7 @@ export class cursosServidorComponent {
 
   async cardClick(idCurso: any) {
     console.log('Buscando curso:', idCurso);
-    const apiUrl = `${this.servidor}/api/bajarCurso?idCurso=${encodeURIComponent(idCurso)}`;
+    const apiUrl = `${this.urlServidor}/api/bajarCurso?idCurso=${encodeURIComponent(idCurso)}`;
 
     console.log(apiUrl);
 
