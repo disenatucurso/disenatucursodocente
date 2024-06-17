@@ -21,19 +21,21 @@
         aria-label="Text input with dropdown button"
         placeholder="Url del servidor"
         class="form-control"
-        [(ngModel)]="urlServidor"
-        (ngModelChange)="validateUrl()">
-    <div class="dropdown">
+        [(ngModel)]="urlServidor">
+    <div class="dropdown" *ngIf="servers.length > 0">
       <button type="button" class="form-control dropdown-toggle" data-bs-toggle="dropdown"
         style="border-top-left-radius: 0px; border-bottom-left-radius: 0px;" aria-expanded="false"
         data-bs-offset="10,10">
         Mis servidores
       </button>
       <ul class="dropdown-menu">
-        <li *ngFor="let server of servers">
-          <a class="dropdown-item" href="#" (click)="cargarServidorEnInput(server)">{{ server }}</a>
-        </li>
+        <ul class="list-unstyled">
+          <li *ngFor="let server of servers">
+            <a class="dropdown-item" href="#" (click)="cargarServidorEnInput(server.url)">{{ server.name }}</a>
+          </li>
+        </ul>
       </ul>
+
     </div>
     <div id="url-invalida" class="invalid-feedback">La URL ingresada no es válida.</div>
   </div>

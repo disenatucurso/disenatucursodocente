@@ -1,5 +1,5 @@
 <!-- <p>-------------------- ALERTAS --------------------</p> -->
-<ngb-alert [dismissible]="true" type='danger'>
+<ngb-alert *ngIf="showAlert" [dismissible]="true" type='danger'>
   <strong>Ups! Ha ocurrido un error</strong>
 </ngb-alert>
 <!-- cabezal -->
@@ -35,7 +35,7 @@
               </div>
               <div class="mb-4">
                 <h5 id="titulo_card" class="mb-0">{{servidor}}</h5>
-                <h6 id="url_card" class="mb-0">{{urlServidor}}</h6>
+                <h6 id="url_card" class="mb-0 mt-2 small">{{urlServidor}}</h6>
               </div>
               <div class="row align-items-center mb-2 d-flex">
                 <div class="text-right small">

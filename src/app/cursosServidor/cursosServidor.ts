@@ -16,6 +16,7 @@ export class cursosServidorComponent {
   urlServidor: string = '';
   cursosBuscados: any[] = [];
   termino: string = '';
+  showAlert: boolean = false; // Variable para controlar la visibilidad del alert
 
   constructor(private modalService: NgbModal, private router: Router,
               public initialSchemaService: InitialSchemaLoaderService,
@@ -64,10 +65,12 @@ export class cursosServidorComponent {
       } else {
         console.log('Ha ocurrido un error:', response.status);
         alert('Error en la búsqueda. Intente luego o consulte al administrador del sistema.');
+        this.showAlert = true;
       }
     } catch (error) {
       console.error('Error al realizar la solicitud:', error);
       alert('Error en la búsqueda. Intente luego o consulte al administrador del sistema.');
+      this.showAlert = true;
     }
   }
 
@@ -95,10 +98,12 @@ export class cursosServidorComponent {
       } else {
         console.log('Ha ocurrido un error:', response.status);
         alert('Error en la búsqueda. Intente luego o consulte al administrador del sistema.');
+        this.showAlert = true;
       }
     } catch (error) {
       console.error('Error al realizar la solicitud:', error);
       alert('Error en la búsqueda. Intente luego o consulte al administrador del sistema.');
+      this.showAlert = true;
     }
 
   }
@@ -122,10 +127,12 @@ export class cursosServidorComponent {
       } else {
         console.log('Ha ocurrido un error:', response.status);
         alert('Error en la búsqueda. Intente luego o consulte al administrador del sistema.');
+        this.showAlert = true;
       }
     } catch (error) {
       console.error('Error al realizar la solicitud:', error);
       alert('Error en la búsqueda. Intente luego o consulte al administrador del sistema.');
+      this.showAlert = true;
     }
   }
 
@@ -155,6 +162,7 @@ export class cursosServidorComponent {
       else {
         console.log('Ha ocurrido un error, ', response.status);
         alert('Error al modificar el curso. Intente nuevamente.');
+        this.showAlert = true;
       }
     } catch (e) {
       const alert = document.querySelector('ngb-alert');
