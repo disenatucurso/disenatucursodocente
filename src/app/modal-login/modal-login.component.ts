@@ -101,7 +101,7 @@ export class ModalLoginComponent implements OnInit {
       headers.append('Content-Type', 'application/json');
       try {
         // no hay convencion sobre los nombres aun asi que paso id para que busque archivo curso_id
-        const response = await fetch(`http://localhost:3000/` + this.initialSchemaService.puertoBackend + `/servers`, {
+        const response = await fetch(`http://localhost:` + this.initialSchemaService.puertoBackend + `/servers`, {
           method: 'PUT',
           headers: headers,
           mode: 'cors',
@@ -184,7 +184,7 @@ export class ModalLoginComponent implements OnInit {
       headers.append('Content-Type', 'application/json');
       try {
         // no hay convencion sobre los nombres aun asi que paso id para que busque archivo curso_id
-        const response = await fetch(`http://localhost:3000/` + this.initialSchemaService.puertoBackend + `/servers`, {
+        const response = await fetch(`http://localhost:` + this.initialSchemaService.puertoBackend + `/servers`, {
           method: 'PUT',
           headers: headers,
           mode: 'cors',

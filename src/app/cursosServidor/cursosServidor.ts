@@ -13,6 +13,7 @@ export class cursosServidorComponent {
   title = 'DisenaTuCursoDocente';
   token: string = '';
   servidor: string = '';
+  urlServidor: string = '';
   cursosBuscados: any[] = [];
   termino: string = '';
 
@@ -23,10 +24,12 @@ export class cursosServidorComponent {
   ngOnInit(): void {
     this.route.queryParams.subscribe(params => {
       this.token = params['token'];
-      this.servidor = params['servidor'];
+      this.urlServidor = params['servidor'];
       console.log('Token:', this.token);
       console.log('URL del servidor:', this.servidor);
     });
+
+    this.getNombre(this.urlServidor);
 
     const alert = document.querySelector('ngb-alert')
     if(alert)
@@ -96,6 +99,31 @@ export class cursosServidorComponent {
       alert('Error en la búsqueda. Intente luego o consulte al administrador del sistema.');
     }
 
+  }
+
+  async getNombre(urlServidor: string) {
+    const apiUrl = `${urlServidor}/api/institucion`;
+
+    console.log(apiUrl);
+
+    try {
+      const response = await fetch(apiUrl, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      });
+
+      if (response.ok) {
+        this.servidor = await response.json();
+      } else {
+        console.log('Ha ocurrido un error:', response.status);
+        alert('Error en la búsqueda. Intente luego o consulte al administrador del sistema.');
+      }
+    } catch (error) {
+      console.error('Error al realizar la solicitud:', error);
+      alert('Error en la búsqueda. Intente luego o consulte al administrador del sistema.');
+    }
   }
 
   goHome() {
