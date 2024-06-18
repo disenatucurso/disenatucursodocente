@@ -16,12 +16,17 @@ import { GrupoDatoFijo } from '../modelos/schema.model';
 import { InformacionGuardada, SchemaSavedData, Version } from '../modelos/schemaData.model';
 import { InitialSchemaLoaderService } from '../servicios/initial-schema-loader.service';
 
-
+interface Server {
+  name: string;
+  url: string;
+}
 @Component({
   selector: 'app-home',
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.css'],
 })
+
+
 export class HomeComponent {
   pdf: any;
   title = 'DisenaTuCursoDocente';
@@ -30,11 +35,12 @@ export class HomeComponent {
   token: string = '';
   urlServidor: string = '';
   datosFijos: GrupoDatoFijo[] | undefined;
+  servers: Server[] = [];
 
   constructor(private modalService: NgbModal, private router: Router,
     public initialSchemaService: InitialSchemaLoaderService) { }
 
-  ngOnInit(): void {
+  async ngOnInit(): Promise<void> {
     //remuevo el mensaje de error que se carga por defecto, se muestra poniendole la clase .show
     const alert = document.querySelector('ngb-alert')
     if (alert)
@@ -44,6 +50,28 @@ export class HomeComponent {
     this.initialSchemaService.loadAllDataFile();
     console.log(this.initialSchemaService.allData)
     this.datosFijos = this.initialSchemaService.defaultSchema?.gruposDatosFijos;
+
+    let headers = new Headers();
+    headers.append('Accept', 'application/json');
+
+    try {
+      const response = await fetch('http://localhost:' + this.initialSchemaService.puertoBackend + '/servers', {
+        method: 'GET',
+        headers: headers,
+        mode: 'cors',
+      });
+      if (response.status === 200) {
+        this.servers = await response.json();
+        console.log('Servidores obtenidos exitosamente', this.servers);
+      } else {
+        console.log('Ha ocurrido un error, ', response.status);
+      }
+    } catch (e) {
+      const alert = document.querySelector('ngb-alert');
+      if (alert)
+        alert.classList.add('show');
+      console.error(e);
+    }
   }
 
   cardClick(idCurso: any) {
@@ -85,7 +113,7 @@ export class HomeComponent {
         const autor = {
           "username": null,
           "institucion": null,
-          "nombre": resp.username,
+          "nombre": resp.username, // cambiar aca y pasar el nombre de usuario del usuario logeado
         };
 
         cursoJson.autores.push(autor);
@@ -245,6 +273,11 @@ export class HomeComponent {
       },
     });
 
+  }
+
+  getInstitutionName(url: any): string {
+    const server = this.servers.find(server => server.url === url);
+    return server ? server.name : 'Institución no encontrada'; // Devuelve el nombre si se encuentra el servidor, o un mensaje de error si no se encuentra
   }
 
   editarNombre(curso: SchemaSavedData, event: any) {
