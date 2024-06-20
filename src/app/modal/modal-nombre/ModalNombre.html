@@ -1,0 +1,20 @@
+<div class="modal-header">
+    <h4 class="modal-title">{{tittle}}</h4>
+</div>
+<div class="modal-body">
+    <p>{{body}}</p>
+    <div *ngFor="let datoInput of inputDisclaimer; let i = index">
+      <input
+          type="{{ datoInput === 'Contraseña' ? 'password' : 'text' }}"
+          class="form-control"
+          id="input-content_{{i}}"
+          [placeholder]="datoInput"
+          (input)="onInputChange()"
+          style="margin: 0.5rem 0;">
+  </div>
+
+
+</div>
+<div class="modal-footer">
+    <button type="button" class="btn btn-primary background-primary m-2" (click)="resolve()">Confirmar</button>
+</div>

@@ -14,6 +14,7 @@ import { DashboardComponent } from './dashboard/dashboard.component';
 import { cursosServidorComponent } from './cursosServidor/cursosServidor';
 import { ExportpdfComponent } from './exportpdf/exportpdf.component';
 import { ModalComentariosComponent } from './modal/comentarios/modal-comentarios.component';
+import { ModalNombreComponent } from './modal/modal-nombre/ModalNombre';
 import { ModalConfirmacionComponent } from './modal/confirmacion/modal-confirmacion.component';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { HomeComponent } from './home/home.component';
@@ -40,6 +41,7 @@ export function initConfig(loaderService : InitialSchemaLoaderService) {
     GrupoComponent,
     AtributoComponent,
     ModalComentariosComponent,
+    ModalNombreComponent,
     ModalConfirmacionComponent,
     DashboardComponent,
     cursosServidorComponent,

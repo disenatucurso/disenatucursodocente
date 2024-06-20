@@ -16,6 +16,7 @@ export class cursosServidorComponent {
   urlServidor: string = '';
   cursosBuscados: any[] = [];
   termino: string = '';
+  autor: string = '';
   showAlert: boolean = false; // Variable para controlar la visibilidad del alert
 
   constructor(private modalService: NgbModal, private router: Router,
@@ -31,6 +32,7 @@ export class cursosServidorComponent {
     this.route.queryParams.subscribe(params => {
       this.token = params['token'];
       this.urlServidor = params['servidor'];
+      this.autor = params['autor'];
       console.log('Token:', this.token);
       console.log('URL del servidor:', this.urlServidor);
     });
@@ -141,34 +143,63 @@ export class cursosServidorComponent {
   }
 
   async descargarCurso(curso: SchemaSavedData) {
-    curso.id = (this.initialSchemaService.allData?.length || 0) + 1;
-    let headers = new Headers();
-    headers.append('Accept', 'application/json');
-    headers.append('Content-Type', 'application/json');
-    try {
-      const response = await fetch(`http://localhost:${this.initialSchemaService.puertoBackend}/cursos/${curso?.id}`, {
-        method: 'PUT',
-        headers: headers,
-        mode: 'cors',
-        body: JSON.stringify({
-          curso: { ...curso, fechaModificacion: new Date() },
-        }),
-      });
-      if (response.status === 200){
-        console.log('Curso descargado exitosamente');
-        alert("Curso descargado exitosamente. Podrás verlo en el Inicio.")
-        this.goHome();
+    // Encontrar el id mayor en el array allData
+    const maxId = this.initialSchemaService.allData?.reduce((max, item) => item.id > max ? item.id : max, 0) || 0;
+    console.log(maxId);
+    curso.id = maxId + 1;
+    const ultimaVersionActual = structuredClone(curso?.versiones.at(-1));
+
+    if (ultimaVersionActual) {
+      const nuevaVersion = {
+        ...ultimaVersionActual,
+        nombre: ultimaVersionActual.nombre || 'Nombre predeterminado', // Proporciona un valor predeterminado
+        autor: this.autor,
+        version: (ultimaVersionActual.version ?? 0) + 1,
+        fechaCreacion: new Date(),
+        fechaModificacion: new Date(),
+        schemaVersion: ultimaVersionActual.schemaVersion ?? 1, // Proporciona un valor predeterminado para schemaVersion si es necesario
+        datosGuardados: ultimaVersionActual.datosGuardados || [] // Proporciona un valor predeterminado para datosGuardados si es necesario
+      };
+
+      curso?.versiones.push(nuevaVersion);
+      delete curso.idGlobal; // Eliminar la propiedad idGlobal
+      delete curso.institucion; // Eliminar la propiedad institucion
+      delete curso.versionGlobal; // Eliminar la propiedad versionGlobal
+
+      let headers = new Headers();
+      headers.append('Accept', 'application/json');
+      headers.append('Content-Type', 'application/json');
+      try {
+        const response = await fetch(`http://localhost:${this.initialSchemaService.puertoBackend}/cursos/${curso?.id}`, {
+          method: 'PUT',
+          headers: headers,
+          mode: 'cors',
+          body: JSON.stringify({
+            curso: { ...curso, fechaModificacion: new Date() },
+          }),
+        });
+        if (response.status === 200) {
+          this.initialSchemaService.allData?.push(curso);
+          console.log('Curso descargado exitosamente');
+          alert("Curso descargado exitosamente. Podrás verlo en el Inicio.")
+          this.goHome();
+        } else {
+          console.log('Ha ocurrido un error, ', response.status);
+          alert('Error al modificar el curso. Intente nuevamente.');
+          this.showAlert = true;
+        }
+      } catch (e) {
+        const alert = document.querySelector('ngb-alert');
+        if (alert)
+          alert.classList.add('show');
+        console.error(e);
       }
-      else {
-        console.log('Ha ocurrido un error, ', response.status);
-        alert('Error al modificar el curso. Intente nuevamente.');
-        this.showAlert = true;
-      }
-    } catch (e) {
-      const alert = document.querySelector('ngb-alert');
-      if (alert)
-        alert.classList.add('show');
-      console.error(e);
+    } else {
+      console.error('No se encontró la última versión del curso.');
+      alert('No se encontró la última versión del curso. Intente nuevamente.');
+      this.showAlert = true;
     }
   }
+
+
 }

@@ -19,7 +19,7 @@ export class ModalComentariosComponent implements OnInit {
 
     constructor(public activeModal: NgbActiveModal) { }
 
-    ngOnInit(): void { 
+    ngOnInit(): void {
         console.log(this.comentariosPrivados)
     }
 
@@ -37,7 +37,7 @@ export class ModalComentariosComponent implements OnInit {
         }
         this.activeModal.close(this.salida);
     }
-    
+
     reject() {
         this.activeModal.dismiss('Cancelar');
     }

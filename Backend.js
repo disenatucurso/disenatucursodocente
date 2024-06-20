@@ -99,6 +99,29 @@ appp.get("/servers", function(req, res) {
   return res.status(200).send(servers);
 });
 
+appp.get("/variables", function(req, res) {
+  const serversFilePath = __dirname + "/dist/disena-tu-curso-docente/assets/variables.json";
+  let servers = [];
+
+  try {
+      // Verificar si el archivo existe
+      if (fs.existsSync(serversFilePath)) {
+          // Si existe, leer el contenido y analizarlo como JSON
+          const data = fs.readFileSync(serversFilePath, 'utf8');
+          servers = JSON.parse(data);
+      } else {
+          // Si no existe, crear el archivo y escribir el array vacío
+          fs.writeFileSync(serversFilePath, '[]', 'utf8');
+      }
+  } catch (err) {
+      console.error(err.message);
+      return res.status(400).send(err.message);
+  }
+
+  // Devolver el array de servidores
+  return res.status(200).send(servers);
+});
+
 appp.put("/cursos/:id", function(req, res) {
     const { id } = req.params;
     const cursoActualizado = req.body.curso;
@@ -131,6 +154,37 @@ appp.put("/servers", function(req, res) {
       }
   );
 });
+
+appp.put("/variables", function(req, res) {
+  const serversActualizado = req.body.variables;
+  const filePath = path.join(__dirname, "/dist/disena-tu-curso-docente/assets/variables.json");
+
+  // Verificar si el archivo existe
+  fs.access(filePath, fs.constants.F_OK, (accessErr) => {
+      if (accessErr) {
+          // Si el archivo no existe, se crea al escribir en él
+          fs.writeFile(filePath, JSON.stringify(serversActualizado), (writeErr) => {
+              if (writeErr) {
+                  console.log(writeErr);
+                  res.status(400).send(writeErr);
+              } else {
+                  res.status(200).send();
+              }
+          });
+      } else {
+          // Si el archivo existe, simplemente se escribe en él
+          fs.writeFile(filePath, JSON.stringify(serversActualizado), (writeErr) => {
+              if (writeErr) {
+                  console.log(writeErr);
+                  res.status(400).send(writeErr);
+              } else {
+                  res.status(200).send();
+              }
+          });
+      }
+  });
+});
+
 
 appp.delete("/cursos/:id", function(req, res) {
     const { id } = req.params;
