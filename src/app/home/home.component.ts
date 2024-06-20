@@ -45,6 +45,7 @@ export class HomeComponent {
   servers: Server[] = [];
   variables: Variables[] = [];
 
+
   constructor(private modalService: NgbModal, private router: Router,
     public initialSchemaService: InitialSchemaLoaderService) { }
 
@@ -81,6 +82,13 @@ export class HomeComponent {
       console.error(e);
     }
     this.VerificarExisteNombre()
+  }
+
+  // Método para manejar el evento de clic en el lápiz
+  onEditAuthor() {
+    console.log('Editar autor');
+    this.ingresarNombreUsuario();
+    // Lógica para editar el autor
   }
 
   cardClick(idCurso: any) {
@@ -343,7 +351,16 @@ export class HomeComponent {
           console.log(resp);
           this.autor = resp[0]
 
+         // Buscar el objeto con clave "Nombre"
+        let variableNombre = this.variables.find(v => v.clave === "Nombre");
+
+        if (variableNombre) {
+          // Si existe, actualizar el valor
+          variableNombre.valor = this.autor;
+        } else {
+          // Si no existe, agregarlo al array
           this.variables.push({ clave: "Nombre", valor: this.autor });
+        }
 
           let headers = new Headers();
           headers.append('Accept', 'application/json');

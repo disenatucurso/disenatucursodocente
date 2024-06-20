@@ -149,3 +149,11 @@
 .link-hover:hover{
   text-decoration: underline;
 }
+
+.pencil-icon {
+  display: none;
+}
+
+.d-flex.flex-row.align-items-center:hover .pencil-icon {
+  display: inline;
+}

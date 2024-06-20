@@ -4,16 +4,22 @@
 </ngb-alert>
 <!-- cabezal -->
 <header class="ps-4 pt-2 container" *ngIf="!this.initialSchemaService.loadedData">
-  <!-- <p>1</p> -->
   <div class="d-flex flex-row border-bottom justify-content-between">
     <div class="d-flex flex-row align-items-center">
       <i class="bi bi-mortarboard-fill p-2" style="font-size: 1.8rem;"></i>
       <h1 class="p-2 fw-bolder">Inicio</h1>
     </div>
-
+    <div *ngIf="this.autor" class="d-flex flex-row align-items-center position-relative" title="Editar nombre">
+      <i class="bi bi-person-lines-fill px-2"></i>
+      <small>{{autor}}</small>
+      <i
+        class="bi bi-pencil-fill pencil-icon px-2 opacity-75"
+        (click)="onEditAuthor()"
+        style="cursor: pointer;"></i>
+    </div>
   </div>
-  <!-- <p>1</p> -->
 </header>
+
 
 
 <section class="container d-flex align-items-center row m-auto">
