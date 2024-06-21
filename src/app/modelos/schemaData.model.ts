@@ -62,9 +62,9 @@ export interface ComentarioPrivado{
 }
 
 export interface Autores{
-  username:string;
-  institucion:string;
-  nombre:string;
+  username:string| null;
+  institucion:string| null;
+  nombre:string| null;
 }
 
 export interface Referencias{

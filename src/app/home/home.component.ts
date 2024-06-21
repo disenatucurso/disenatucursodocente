@@ -130,7 +130,7 @@ export class HomeComponent {
         const autor = {
           "username": null,
           "institucion": null,
-          "nombre": resp.username, // cambiar aca y pasar el nombre de usuario del usuario logeado
+          "nombre": this.autor
         };
 
         cursoJson.autores.push(autor);
@@ -153,7 +153,7 @@ export class HomeComponent {
           const response = await fetch(apiUrl, {
             method: 'POST',
             headers: {
-              'Content-Type': 'application/json',
+              'Content-Type': 'application/json; charset=utf-8',
               'Authorization': 'Bearer ' + resp.token,
             },
             body: JSON.stringify(requestBody),
@@ -218,7 +218,7 @@ export class HomeComponent {
           const response = await fetch(apiUrl, {
             method: 'POST',
             headers: {
-              'Content-Type': 'application/json',
+              'Content-Type': 'application/json; charset=utf-8',
               'Authorization': 'Bearer ' + resp.token,
             },
             body: JSON.stringify(requestBody),
@@ -364,7 +364,7 @@ export class HomeComponent {
 
           let headers = new Headers();
           headers.append('Accept', 'application/json');
-          headers.append('Content-Type', 'application/json');
+          headers.append('Content-Type', 'application/json; charset=utf-8');
           try {
             const response = await fetch(`http://localhost:` + this.initialSchemaService.puertoBackend + `/variables`, {
               method: 'PUT',
@@ -402,7 +402,7 @@ export class HomeComponent {
     reader.onload = async () => {
       if (reader.result) var nuevoCurso = JSON.parse(reader.result.toString());
       let headers = new Headers();
-      headers.append('Content-Type', 'application/json');
+      headers.append('Content-Type', 'application/json; charset=utf-8');
       try {
         const response = await fetch('http://localhost:' + this.initialSchemaService.puertoBackend + '/cursos', {
           method: 'POST',
@@ -430,6 +430,19 @@ export class HomeComponent {
             delete nuevoCurso.idGlobal; // Eliminar la propiedad idGlobal
             delete nuevoCurso.institucion; // Eliminar la propiedad idGlobal
             delete nuevoCurso.versionGlobal;
+
+            if (!Array.isArray(nuevoCurso.autores)) {
+              nuevoCurso.autores = [];
+            }
+
+            const autor = {
+              "username": null,
+              "institucion": null,
+              "nombre": this.autor
+            };
+
+            nuevoCurso.autores.push(autor);
+
             this.modificarCurso(nuevoCurso)
             this.initialSchemaService.allData?.push(nuevoCurso);
           }
@@ -621,8 +634,20 @@ export class HomeComponent {
       ],
       archivos: []
     };
+    if (!Array.isArray(curso.autores)) {
+      curso.autores = [];
+    }
+
+    const autor = {
+      "username": null,
+      "institucion": null,
+      "nombre": this.autor
+    };
+
+    curso.autores.push(autor);
+
     let headers = new Headers();
-    headers.append('Content-Type', 'application/json');
+    headers.append('Content-Type', 'application/json; charset=utf-8');
 
     try {
       const response = await fetch('http://localhost:' + this.initialSchemaService.puertoBackend + '/cursos', {
@@ -678,7 +703,7 @@ export class HomeComponent {
     // if (nuevaVersion !== undefined) curso?.versiones?.push(nuevaVersion);
     let headers = new Headers();
     headers.append('Accept', 'application/json');
-    headers.append('Content-Type', 'application/json');
+    headers.append('Content-Type', 'application/json; charset=utf-8');
     try {
       // no hay convencion sobre los nombres aun asi que paso id para que busque archivo curso_id
       const response = await fetch(`http://localhost:${this.initialSchemaService.puertoBackend}/cursos/${curso?.id}`, {

@@ -56,7 +56,7 @@ export class cursosServidorComponent {
       const response = await fetch(apiUrl, {
         method: 'GET',
         headers: {
-          'Content-Type': 'application/json',
+          'Content-Type': 'application/json; charset=utf-8',
           'Authorization': `Bearer ${this.token}`,
         }
       });
@@ -86,7 +86,8 @@ export class cursosServidorComponent {
       const response = await fetch(apiUrl, {
         method: 'GET',
         headers: {
-          'Content-Type': 'application/json',
+          'Content-Type': 'application/json; charset=utf-8',
+
           'Authorization': `Bearer ${this.token}`,
         }
       });
@@ -119,7 +120,7 @@ export class cursosServidorComponent {
       const response = await fetch(apiUrl, {
         method: 'GET',
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json; charset=utf-8'
         }
       });
 
@@ -168,7 +169,7 @@ export class cursosServidorComponent {
 
       let headers = new Headers();
       headers.append('Accept', 'application/json');
-      headers.append('Content-Type', 'application/json');
+      headers.append('Content-Type', 'application/json; charset=utf-8');
       try {
         const response = await fetch(`http://localhost:${this.initialSchemaService.puertoBackend}/cursos/${curso?.id}`, {
           method: 'PUT',
