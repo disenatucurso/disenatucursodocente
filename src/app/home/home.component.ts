@@ -14,7 +14,7 @@ import { ModalComentariosComponent } from '../modal/comentarios/modal-comentario
 import { ModalLoginComponent } from '../modal-login/modal-login.component';
 import { ModalNombreComponent } from '../modal/modal-nombre/ModalNombre';
 import { GrupoDatoFijo } from '../modelos/schema.model';
-import { InformacionGuardada, SchemaSavedData, Version } from '../modelos/schemaData.model';
+import { InformacionGuardada, SchemaSavedData, Version, Referencias, ReferenciasInternas } from '../modelos/schemaData.model';
 import { InitialSchemaLoaderService } from '../servicios/initial-schema-loader.service';
 
 interface Server {
@@ -135,15 +135,15 @@ export class HomeComponent {
 
         cursoJson.autores.push(autor);
 
-        // Verificar y agregar referencias si no existen
-        if (!Array.isArray(cursoJson.referencias)) {
-          cursoJson.referencias = [];
-        }
+        // // Verificar y agregar referencias si no existen
+        // if (!Array.isArray(cursoJson.referencias)) {
+        //   cursoJson.referencias = [];
+        // }
 
-        // Comprobar si el array referencias está vacío y agregar la referencia si es necesario
-        if (cursoJson.referencias.length === 0) {
-          cursoJson.referencias = { internas: [], externas: [] };
-        }
+        // // Comprobar si el array referencias está vacío y agregar la referencia si es necesario
+        // if (cursoJson.referencias.length === 0) {
+        //   cursoJson.referencias = { internas: [], externas: [] };
+        // }
         let stringCurso = JSON.stringify(cursoJson);
         //const cursoB64 = btoa(stringCurso); // Convertir el JSON a base64
         const cursoB64 = btoa(unescape(encodeURIComponent(stringCurso)));
@@ -173,7 +173,7 @@ export class HomeComponent {
             // Convertir la cadena binaria a una cadena UTF-8
             const utf8String = decodeURIComponent(escape(binaryString));
             const decodedCurso = JSON.parse(utf8String);
-            
+
             alert('Tu curso ha sido subido exitosamente al servidor.');
             this.modificarCurso(decodedCurso)
             // Recargar el componente
@@ -446,6 +446,10 @@ export class HomeComponent {
             };
 
             nuevoCurso.autores.push(autor);
+            // Verificar y agregar referencias si no existen
+            if (!nuevoCurso.referencias) {
+              nuevoCurso.referencias = { internas: [], externas: '' };
+            }
 
             this.modificarCurso(nuevoCurso)
             this.initialSchemaService.allData?.push(nuevoCurso);
@@ -649,6 +653,11 @@ export class HomeComponent {
     };
 
     curso.autores.push(autor);
+
+    // Verificar y agregar referencias si no existen
+    if (!curso.referencias) {
+      curso.referencias = { internas: [], externas: '' };
+    }
 
     let headers = new Headers();
     headers.append('Content-Type', 'application/json; charset=utf-8');

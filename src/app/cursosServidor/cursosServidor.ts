@@ -94,7 +94,11 @@ export class cursosServidorComponent {
 
       if (response.ok) {
         const cursoB64 = await response.json();
-        const cursoJson = JSON.parse(atob(cursoB64.base64));
+        // Convertir el base64 de la salida en JSON
+        const binaryString = atob(cursoB64);
+        // Convertir la cadena binaria a una cadena UTF-8
+        const utf8String = decodeURIComponent(escape(binaryString));
+        const cursoJson = JSON.parse(utf8String);
         console.log(cursoJson);
         this.descargarCurso(cursoJson);
 
@@ -166,6 +170,18 @@ export class cursosServidorComponent {
       delete curso.idGlobal; // Eliminar la propiedad idGlobal
       delete curso.institucion; // Eliminar la propiedad institucion
       delete curso.versionGlobal; // Eliminar la propiedad versionGlobal
+
+      if (!Array.isArray(curso.autores)) {
+        curso.autores = [];
+      }
+
+      const autor = {
+        "username": null,
+        "institucion": null,
+        "nombre": this.autor
+      };
+
+      curso.autores.push(autor);
 
       let headers = new Headers();
       headers.append('Accept', 'application/json');

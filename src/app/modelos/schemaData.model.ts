@@ -9,7 +9,7 @@ export interface SchemaSavedData {
   versiones: Version[];
   archivos: Archivo[];
   autores?:Autores[];
-  referencias?:Referencias[];
+  referencias?: Referencias;
 }
 
 export interface Archivo {
@@ -67,22 +67,14 @@ export interface Autores{
   nombre:string| null;
 }
 
-export interface Referencias{
-  internas:ReferenciasInternas[];
-  externas:ReferenciasExternas[];
+export interface Referencias {
+  internas: ReferenciasInternas[] | [];
+  externas: string;
 }
 
-export interface ReferenciasInternas{
-  idGlobal:number;
-  versionGlobal:string;
-  username:string;
-  institucion:string;
+export interface ReferenciasInternas {
+  idGlobal: number;
+  versionGlobal: string;
+  username: string;
+  institucion: string;
 }
-
-export interface ReferenciasExternas{
-  idGlobal:number;
-  versionGlobal:string;
-  username:string;
-  institucion:string;
-}
-
