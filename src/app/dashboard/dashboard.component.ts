@@ -80,7 +80,7 @@ export class DashboardComponent implements OnInit {
                             childrenLink.grado = 2
                             node.childrenLinks.push(childrenLink)
                         }
-                    
+
                     // agrego link con el resto de los de grado 1
                     for (var j=0; j < graph.nodes.length; j++) {
                         let link: any = {source:'',target:''};
@@ -89,14 +89,14 @@ export class DashboardComponent implements OnInit {
                         link.grado = 1
 
                         graph.links.push(link)
-                    }    
+                    }
 
                     graph.nodes.push(node)
 
                 }
                 createGraph(graph); // function en script.js
           }, 0);
-        
+
     }
 
     @HostListener('window:grupoOnClick', ['$event.detail.grupoId'])
@@ -111,10 +111,10 @@ export class DashboardComponent implements OnInit {
                             grupoSeleccionado = schemaEtapas[i].grupos[j]
                     }
             }
-        this.grupoCargado = grupoSeleccionado; 
+        this.grupoCargado = grupoSeleccionado;
         this.mostrarUIVersiones = false
     }
-    
+
     mostrarGruposDeEtapa(etapa: Etapa){
         console.log(etapa.grupos)
         this.gruposDeEtapa = etapa.grupos;
@@ -136,7 +136,7 @@ export class DashboardComponent implements OnInit {
             modalRef.componentInstance.tittle = 'Nueva version';
             modalRef.componentInstance.body = "Se creará una nueva versión del curso a partir de la version actual."
             modalRef.componentInstance.inputDisclaimer[0] = 'Nombre de la nueva versión';
-            
+
             //Control Resolve with Observable
             modalRef.closed.subscribe({
                 next: (resp) => {
@@ -156,7 +156,7 @@ export class DashboardComponent implements OnInit {
                 });
                 modalRef.componentInstance.tittle = 'Eliminar curso';
                 modalRef.componentInstance.body = "¿Confirma que desea eliminar éste curso?"
-                
+
                 //Control Resolve with Observable
                 modalRef.closed.subscribe({
                     next: (resp) => {
@@ -170,7 +170,7 @@ export class DashboardComponent implements OnInit {
                 });
             }
         }
-        
+
     }
 
     descargarArchivo(){
@@ -186,7 +186,7 @@ export class DashboardComponent implements OnInit {
         a.setAttribute('href', 'data:text/plain;charset=utf-u,'+encodeURIComponent(JSON.stringify(this.initialSchemaService.loadedData, null, 4)));
         a.setAttribute('download', this.initialSchemaService.loadedData?.nombreCurso + ".json");
         a.click();
-        
+
     }
 
     public descargarPDF(event: any):void{
@@ -221,6 +221,27 @@ export class DashboardComponent implements OnInit {
         curso?.versiones.push(nuevaVersion!);
         this.versionSeleccionada = nuevaVersion!;
         this.accionesCursosService.modificarCurso();
+    }
+
+    eliminarVersion(version: number, e: any) {
+      const curso = this.initialSchemaService.loadedData;
+      if (curso) {
+        // Encuentra la versión que se va a eliminar
+        const index = curso.versiones.findIndex(v => v.version === version);
+
+        if (index !== -1) {
+          // Elimina la versión del array de versiones del curso
+          curso.versiones.splice(index, 1);
+
+          // Si la versión eliminada es la versión seleccionada actualmente, selecciona la última versión
+          if (this.versionSeleccionada.version === version) {
+            this.versionSeleccionada = curso.versiones.at(-1)!; // Selecciona la última versión restante
+          }
+
+          // Realiza cualquier acción necesaria después de eliminar la versión (ej. guardar cambios)
+          this.accionesCursosService.modificarCurso();
+        }
+      }
     }
 
     seleccionarVersion(version: number, e:any){

@@ -82,6 +82,11 @@
                                 <i class="bi bi-plus-circle me-2"></i>
                                 NUEVA VERSIÓN
                             </button>
+
+                            <button (click)="eliminarVersion(version.version, $event)" class="btn btn-outline-secondary m-2" style="font-size: 10px;" title="Eliminar esta versión del curso.">
+                              <i class="bi bi-trash-fill"></i>
+                              ELIMINAR VERSIÓN
+                            </button>
                         </ng-container>
                     </div>
                 </div>
