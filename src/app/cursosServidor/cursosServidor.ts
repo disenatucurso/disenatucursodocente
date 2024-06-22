@@ -47,8 +47,11 @@ export class cursosServidorComponent {
   }
 
   async buscarCurso(termino: string) {
-    console.log('Buscando curso con término:', termino);
-    const apiUrl = `${this.urlServidor}/api/listarCursos?criterio=${encodeURIComponent(termino)}`;
+    let apiUrl = `${this.urlServidor}/api/listarCursos`;
+    if(termino != ""){
+      console.log('Buscando curso con término:', termino);
+      apiUrl+=`?criterio=${encodeURIComponent(termino)}`
+    }
 
     console.log(apiUrl);
 
