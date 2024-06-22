@@ -154,7 +154,7 @@ export class HomeComponent {
             alert('Tu curso ha sido subido exitosamente al servidor.');
             this.modificarCurso(decodedCurso)
             // Recargar el componente
-            this.ngOnInit();
+            window.location.reload();  // Recarga toda la página
           } else {
             // Si la solicitud no fue exitosa, mostrar un mensaje de error
             console.log('Ha ocurrido un error:', response.status);
@@ -223,7 +223,7 @@ export class HomeComponent {
             this.modificarCurso(decodedCurso)
 
             // Recargar el componente
-            this.ngOnInit();
+            window.location.reload();  // Recarga toda la página
           } else {
             // Si la solicitud no fue exitosa, mostrar un mensaje de error
             console.log('Ha ocurrido un error:', response.status);
