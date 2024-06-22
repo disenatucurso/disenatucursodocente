@@ -121,29 +121,6 @@ export class HomeComponent {
 
         cursoJson.idGlobal = null; // Agregar el atributo idGlobal con valor null
 
-        // Verificar y agregar autores si no existen
-
-        if (!Array.isArray(cursoJson.autores)) {
-          cursoJson.autores = [];
-        }
-
-        const autor = {
-          "username": null,
-          "institucion": null,
-          "nombre": this.autor
-        };
-
-        cursoJson.autores.push(autor);
-
-        // // Verificar y agregar referencias si no existen
-        // if (!Array.isArray(cursoJson.referencias)) {
-        //   cursoJson.referencias = [];
-        // }
-
-        // // Comprobar si el array referencias está vacío y agregar la referencia si es necesario
-        // if (cursoJson.referencias.length === 0) {
-        //   cursoJson.referencias = { internas: [], externas: [] };
-        // }
         let stringCurso = JSON.stringify(cursoJson);
         //const cursoB64 = btoa(stringCurso); // Convertir el JSON a base64
         const cursoB64 = btoa(unescape(encodeURIComponent(stringCurso)));
@@ -235,9 +212,12 @@ export class HomeComponent {
             const base64 = responseData.base64;
             console.log('Curso subido exitosamente', idCurso);
             console.log('Nuevo base64', base64);
+
             // Convertir el base64 de la salida en JSON
-            const decodedCurso = JSON.parse(atob(base64));
-            console.log('Nuevo JSON', decodedCurso);
+            const binaryString = atob(base64);
+            // Convertir la cadena binaria a una cadena UTF-8
+            const utf8String = decodeURIComponent(escape(binaryString));
+            const decodedCurso = JSON.parse(utf8String);
 
             alert('Tu curso ha sido actualizado en el servidor.');
             this.modificarCurso(decodedCurso)
@@ -448,7 +428,7 @@ export class HomeComponent {
             nuevoCurso.autores.push(autor);
             // Verificar y agregar referencias si no existen
             if (!nuevoCurso.referencias) {
-              nuevoCurso.referencias = { internas: [], externas: '' };
+              nuevoCurso.referencias = { internas: [], externas: [] };
             }
 
             this.modificarCurso(nuevoCurso)
@@ -656,7 +636,7 @@ export class HomeComponent {
 
     // Verificar y agregar referencias si no existen
     if (!curso.referencias) {
-      curso.referencias = { internas: [], externas: '' };
+      curso.referencias = { internas: [], externas: [] };
     }
 
     let headers = new Headers();

@@ -69,7 +69,7 @@ export interface Autores{
 
 export interface Referencias {
   internas: ReferenciasInternas[] | [];
-  externas: string;
+  externas: [];
 }
 
 export interface ReferenciasInternas {
