@@ -144,8 +144,10 @@ export class HomeComponent {
         if (cursoJson.referencias.length === 0) {
           cursoJson.referencias = { internas: [], externas: [] };
         }
+        let stringCurso = JSON.stringify(cursoJson);
+        //const cursoB64 = btoa(stringCurso); // Convertir el JSON a base64
+        const cursoB64 = btoa(unescape(encodeURIComponent(stringCurso)));
 
-        const cursoB64 = btoa(JSON.stringify(cursoJson)); // Convertir el JSON a base64
         const requestBody = { base64: cursoB64 };
         const apiUrl = `${resp.urlServidorValue}/api/subirCurso`;
 
@@ -167,9 +169,11 @@ export class HomeComponent {
             console.log('Curso subido exitosamente', idCurso);
             console.log('Nuevo base64', base64);
             // Convertir el base64 de la salida en JSON
-            const decodedCurso = JSON.parse(atob(base64));
-            console.log('Nuevo JSON', decodedCurso);
-
+            const binaryString = atob(base64);
+            // Convertir la cadena binaria a una cadena UTF-8
+            const utf8String = decodeURIComponent(escape(binaryString));
+            const decodedCurso = JSON.parse(utf8String);
+            
             alert('Tu curso ha sido subido exitosamente al servidor.');
             this.modificarCurso(decodedCurso)
             // Recargar el componente
