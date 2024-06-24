@@ -95,21 +95,14 @@ export class cursosServidorComponent {
       });
 
       if (response.ok) {
-        const cursoB64 = await response.json();
-
-        if (this.isBase64(cursoB64)) {
-          // Convertir el base64 de la salida en JSON
-          const binaryString = atob(cursoB64);
-          // Convertir la cadena binaria a una cadena UTF-8
-          const utf8String = decodeURIComponent(escape(binaryString));
-          const cursoJson = JSON.parse(utf8String);
-          console.log(cursoJson);
-          this.descargarCurso(cursoJson);
-        } else {
-          console.error('La respuesta no es una cadena base64 válida');
-          alert('Error al descargar el curso. Intente luego o consulte al administrador del sistema.');
-          this.showAlert = true;
-        }
+        const respuestaSRV = await response.json();
+        // Convertir el base64 de la salida en JSON
+        const binaryString = atob(respuestaSRV.base64);
+        // Convertir la cadena binaria a una cadena UTF-8
+        const utf8String = decodeURIComponent(escape(binaryString));
+        const cursoJson = JSON.parse(utf8String);
+        console.log(cursoJson);
+        this.descargarCurso(cursoJson);
       } else {
         console.log('Ha ocurrido un error:', response.status);
         alert('Error en la búsqueda. Intente luego o consulte al administrador del sistema.');
