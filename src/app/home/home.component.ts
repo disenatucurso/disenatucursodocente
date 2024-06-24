@@ -190,9 +190,11 @@ export class HomeComponent {
     modalRef.closed.subscribe({
       next: async (resp) => { // Añadimos async aquí
         const cursoJson = await this.obtenerCurso(idCurso);
-
-        const cursoB64 = btoa(JSON.stringify(cursoJson)); // Convertir el JSON a base64
+        let stringCurso = JSON.stringify(cursoJson);
+        const cursoB64 = btoa(unescape(encodeURIComponent(stringCurso)));
+      
         const requestBody = { base64: cursoB64 };
+
         const apiUrl = `${resp.urlServidorValue}/api/subirCurso`;
 
         try {
