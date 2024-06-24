@@ -10,6 +10,7 @@ import { SchemaSavedData } from '../modelos/schemaData.model';
   styleUrls: ['./cursosServidor.css'],
 })
 export class cursosServidorComponent {
+  busquedaEmptyVisible: boolean = false;
   title = 'DisenaTuCursoDocente';
   token: string = '';
   servidor: string = '';
@@ -66,6 +67,8 @@ export class cursosServidorComponent {
 
       if (response.ok) {
         this.cursosBuscados = await response.json();
+        // Oculta el mensaje de búsqueda vacía si se encuentran cursos
+        this.busquedaEmptyVisible = this.cursosBuscados.length === 0;
         console.log(this.cursosBuscados);
       } else {
         console.log('Ha ocurrido un error:', response.status);
@@ -95,6 +98,7 @@ export class cursosServidorComponent {
       });
 
       if (response.ok) {
+        const cursoB64 = await response.json();
         const respuestaSRV = await response.json();
         // Convertir el base64 de la salida en JSON
         const binaryString = atob(respuestaSRV.base64);
@@ -103,6 +107,7 @@ export class cursosServidorComponent {
         const cursoJson = JSON.parse(utf8String);
         console.log(cursoJson);
         this.descargarCurso(cursoJson);
+
       } else {
         console.log('Ha ocurrido un error:', response.status);
         alert('Error en la búsqueda. Intente luego o consulte al administrador del sistema.');

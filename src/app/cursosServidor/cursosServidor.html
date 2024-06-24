@@ -101,6 +101,13 @@
 </section>
 
 <!-- Mensaje cuando no hay resultados -->
-<div *ngIf="!this.cursosBuscados || this.cursosBuscados.length === 0">
+<div *ngIf="(!busquedaEmptyVisible && (!this.cursosBuscados || this.cursosBuscados.length === 0))">
   <img src="assets/img/empty_search.svg" alt="Bienvenido/a" class="d-block m-auto" style="max-height: 200px;">
+</div>
+
+<div *ngIf="busquedaEmptyVisible">
+  <img src="assets/img/empty_search2.svg" alt="Bienvenido/a" class="d-block m-auto" style="max-height: 200px;">
+  <h2 id="busquedaEmpty" class="p-2 fw-bolder text-center opacity-75 p-4 m-auto" style="max-width: 50ch;">
+    No se encontraron resultados para la búsqueda
+  </h2>
 </div>
