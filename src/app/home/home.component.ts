@@ -154,7 +154,8 @@ export class HomeComponent {
             alert('Tu curso ha sido subido exitosamente al servidor.');
             this.modificarCurso(decodedCurso)
             // Recargar el componente
-            window.location.reload();  // Recarga toda la página
+
+            this.router.navigate(['/']);
           } else {
             // Si la solicitud no fue exitosa, mostrar un mensaje de error
             console.log('Ha ocurrido un error:', response.status);
@@ -192,7 +193,7 @@ export class HomeComponent {
         const cursoJson = await this.obtenerCurso(idCurso);
         let stringCurso = JSON.stringify(cursoJson);
         const cursoB64 = btoa(unescape(encodeURIComponent(stringCurso)));
-      
+
         const requestBody = { base64: cursoB64 };
 
         const apiUrl = `${resp.urlServidorValue}/api/subirCurso`;
@@ -225,7 +226,7 @@ export class HomeComponent {
             this.modificarCurso(decodedCurso)
 
             // Recargar el componente
-            window.location.reload();  // Recarga toda la página
+            this.router.navigate(['/']);
           } else {
             // Si la solicitud no fue exitosa, mostrar un mensaje de error
             console.log('Ha ocurrido un error:', response.status);
