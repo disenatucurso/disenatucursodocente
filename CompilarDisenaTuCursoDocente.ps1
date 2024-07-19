@@ -7,13 +7,12 @@ $targets += 'linux-x64'
 $targets += 'win32-ia32'
 #$targets += 'win32-x64'
 
-cd "$PSScriptRoot\DisenaTuCursoDocente"
 write-host "COMPILANDO ANGULAR"
 ng build --configuration production --base-href ./
 
 foreach ($target in $targets) {
-    $dirCompiladoProyecto = "$PSScriptRoot\DisenaTuCursoDocente\out\disena-tu-curso-docente-$target\resources\app\"
-    $cursosDeDesarrollo="$PSScriptRoot\DisenaTuCursoDocente\out\disena-tu-curso-docente-$target\resources\app\dist\disena-tu-curso-docente\assets\schemasData\"
+    $dirCompiladoProyecto = "$PSScriptRoot\out\disena-tu-curso-docente-$target\resources\app\"
+    $cursosDeDesarrollo="$PSScriptRoot\out\disena-tu-curso-docente-$target\resources\app\dist\disena-tu-curso-docente\assets\schemasData\"
 
     write-host "-----------------------------------"
     write-host "COMPILANDO ELECTRON para $target"
@@ -58,8 +57,8 @@ foreach ($target in $targets) {
             break
         }
         "darwin-x64"  {
-            $cursosDeDesarrollo="$PSScriptRoot\DisenaTuCursoDocente\out\disena-tu-curso-docente-$target\disena-tu-curso-docente.app\Contents\Resources\app\dist\disena-tu-curso-docente\assets\schemasData\"
-            $dirCompiladoProyecto = "$PSScriptRoot\DisenaTuCursoDocente\out\disena-tu-curso-docente-$target\disena-tu-curso-docente.app\Contents\Resources\app\"
+            $cursosDeDesarrollo="$PSScriptRoot\out\disena-tu-curso-docente-$target\disena-tu-curso-docente.app\Contents\Resources\app\dist\disena-tu-curso-docente\assets\schemasData\"
+            $dirCompiladoProyecto = "$PSScriptRoot\out\disena-tu-curso-docente-$target\disena-tu-curso-docente.app\Contents\Resources\app\"
             $dependencias="accepts,body-parser,call-bind,content-disposition,content-type,cookie,cookie-signature,cors,depd,destroy,ee-first,encodeurl,escape-html,etag,express,finalhandler,forwarded,fresh,function-bind,get-intrinsic,has,has-symbols,http-errors,iconv-lite,inherits,media-typer,merge-descriptors,methods,mime,mime-db,mime-types,negotiator,object-assign,object-inspect,on-finished,parseurl,path-to-regexp,proxy-addr,qs,range-parser,raw-body,safer-buffer,send,serve-static,setprototypeof,side-channel,statuses,toidentifier,type-is,unpipe,utils-merge,vary"
             break
         }
@@ -68,10 +67,11 @@ foreach ($target in $targets) {
             continue
         }
     }
-    $arrayDep = $dependencias -split ','
-    Get-ChildItem "$dirCompiladoProyecto" -Exclude dist,ElectronEntry.js,Backend.js,package.json,loading.html,node_modules | Remove-Item -Recurse -Force
-    Get-ChildItem "$dirCompiladoProyecto\node_modules" -Exclude $arrayDep | Remove-Item -Recurse -Force
+    #ELIMINACION DE DEPENDENCIAS PARA QUE PESE MENOS, EN LA NUEVA VERSION NO FUNCIONA DEL TODO BIEN
+    #$arrayDep = $dependencias -split ','
+    #Get-ChildItem "$dirCompiladoProyecto\node_modules" -Exclude $arrayDep | Remove-Item -Recurse -Force
 
+    Get-ChildItem "$dirCompiladoProyecto" -Exclude dist,ElectronEntry.js,Backend.js,package.json,loading.html,node_modules | Remove-Item -Recurse -Force
     write-host "ELIMINO CURSOS QUE HAYAN VENIDO DESDE DESARROLLO"
     if(test-path -path "$cursosDeDesarrollo"){
         rm "$cursosDeDesarrollo\*"
@@ -81,4 +81,4 @@ foreach ($target in $targets) {
     }
 }
 
-cd "$PSScriptRoot"
+#cd "$PSScriptRoot"
