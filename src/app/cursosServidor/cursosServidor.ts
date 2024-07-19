@@ -98,7 +98,6 @@ export class cursosServidorComponent {
       });
 
       if (response.ok) {
-        const cursoB64 = await response.json();
         const respuestaSRV = await response.json();
         // Convertir el base64 de la salida en JSON
         const binaryString = atob(respuestaSRV.base64);
