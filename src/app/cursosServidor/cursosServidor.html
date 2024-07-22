@@ -1,7 +1,8 @@
 <!-- <p>-------------------- ALERTAS --------------------</p> -->
-<ngb-alert *ngIf="showAlert" [dismissible]="true" type='danger'>
-  <strong>Ups! Ha ocurrido un error</strong>
+<ngb-alert *ngIf="showAlert" [dismissible]="true" type='primary'>
+  <strong>{{ alertMessage }}</strong>
 </ngb-alert>
+
 <!-- cabezal -->
 <header class="ps-4 pt-2 container" *ngIf="!this.initialSchemaService.loadedData">
   <!-- <p>1</p> -->

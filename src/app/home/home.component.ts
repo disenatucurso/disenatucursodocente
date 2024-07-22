@@ -44,6 +44,8 @@ export class HomeComponent {
   datosFijos: GrupoDatoFijo[] | undefined;
   servers: Server[] = [];
   variables: Variables[] = [];
+  showAlert: boolean = false; // Variable para controlar la visibilidad del alert
+  alertMessage: string = '';  // Variable para almacenar el mensaje de error
 
 
   constructor(private modalService: NgbModal, private router: Router,
@@ -151,7 +153,9 @@ export class HomeComponent {
             const utf8String = decodeURIComponent(escape(binaryString));
             const decodedCurso = JSON.parse(utf8String);
 
-            alert('Tu curso ha sido subido exitosamente al servidor.');
+            this.alertMessage = 'Tu curso ha sido subido exitosamente al servidor.';
+            this.showAlert = true;
+            this.scrollToTop();
             this.modificarCurso(decodedCurso)
             // Recargar el componente
 
@@ -159,12 +163,18 @@ export class HomeComponent {
           } else {
             // Si la solicitud no fue exitosa, mostrar un mensaje de error
             console.log('Ha ocurrido un error:', response.status);
-            alert('Error al subir el curso. Intente luego o consulte al administrador del sistema.');
+
+            this.alertMessage = 'Error al subir el curso. Intente luego o consulte al administrador del sistema.';
+            this.showAlert = true;
+            this.scrollToTop();
           }
         } catch (error) {
           // Manejar errores de la solicitud
           console.error('Error al realizar la solicitud:', error);
-          alert('Error al subir el curso. Intente luego o consulte al administrador del sistema.');
+
+          this.alertMessage = 'Error al subir el curso. Intente luego o consulte al administrador del sistema.';
+          this.showAlert = true;
+          this.scrollToTop();
         }
       },
       error: () => {
@@ -222,7 +232,10 @@ export class HomeComponent {
             const utf8String = decodeURIComponent(escape(binaryString));
             const decodedCurso = JSON.parse(utf8String);
 
-            alert('Tu curso ha sido actualizado en el servidor.');
+
+            this.alertMessage = 'Tu curso ha sido actualizado en el servidor.';
+            this.showAlert = true;
+            this.scrollToTop();
             this.modificarCurso(decodedCurso)
 
             // Recargar el componente
@@ -230,12 +243,16 @@ export class HomeComponent {
           } else {
             // Si la solicitud no fue exitosa, mostrar un mensaje de error
             console.log('Ha ocurrido un error:', response.status);
-            alert('Error al subir el curso. Intente luego o consulte al administrador del sistema.');
+            this.alertMessage = 'Error al subir el curso. Intente luego o consulte al administrador del sistema.';
+            this.showAlert = true;
+            this.scrollToTop();
           }
         } catch (error) {
           // Manejar errores de la solicitud
           console.error('Error al realizar la solicitud:', error);
-          alert('Error al subir el curso. Intente luego o consulte al administrador del sistema.');
+          this.alertMessage = 'Error al subir el curso. Intente luego o consulte al administrador del sistema.';
+            this.showAlert = true;
+            this.scrollToTop();
         }
       },
       error: () => {
@@ -829,5 +846,9 @@ export class HomeComponent {
     let vuelta = !this.initialSchemaService.allData;
     console.log("muestroNoExistenCursos: " + vuelta);
     return vuelta;
+  }
+
+  scrollToTop() {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 }

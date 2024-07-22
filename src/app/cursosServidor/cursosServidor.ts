@@ -19,17 +19,13 @@ export class cursosServidorComponent {
   termino: string = '';
   autor: string = '';
   showAlert: boolean = false; // Variable para controlar la visibilidad del alert
+  alertMessage: string = '';  // Variable para almacenar el mensaje de error
 
   constructor(private modalService: NgbModal, private router: Router,
               public initialSchemaService: InitialSchemaLoaderService,
               private route: ActivatedRoute) {}
 
   ngOnInit(): void {
-    //remuevo el mensaje de error que se carga por defecto, se muestra poniendole la clase .show
-    const alert = document.querySelector('ngb-alert')
-    if (alert)
-      alert.classList.remove('show')
-
     this.route.queryParams.subscribe(params => {
       this.token = params['token'];
       this.urlServidor = params['servidor'];
@@ -39,7 +35,6 @@ export class cursosServidorComponent {
     });
 
     this.getNombre(this.urlServidor);
-
   }
 
   onSubmit(event: Event) {
@@ -49,9 +44,9 @@ export class cursosServidorComponent {
 
   async buscarCurso(termino: string) {
     let apiUrl = `${this.urlServidor}/api/listarCursos`;
-    if(termino != ""){
+    if (termino != "") {
       console.log('Buscando curso con término:', termino);
-      apiUrl+=`?criterio=${encodeURIComponent(termino)}`
+      apiUrl += `?criterio=${encodeURIComponent(termino)}`
     }
 
     console.log(apiUrl);
@@ -67,17 +62,16 @@ export class cursosServidorComponent {
 
       if (response.ok) {
         this.cursosBuscados = await response.json();
-        // Oculta el mensaje de búsqueda vacía si se encuentran cursos
         this.busquedaEmptyVisible = this.cursosBuscados.length === 0;
         console.log(this.cursosBuscados);
       } else {
         console.log('Ha ocurrido un error:', response.status);
-        alert('Error en la búsqueda. Intente luego o consulte al administrador del sistema.');
+        this.alertMessage = 'Error en la búsqueda. Intente luego o consulte al administrador del sistema.';
         this.showAlert = true;
       }
     } catch (error) {
       console.error('Error al realizar la solicitud:', error);
-      alert('Error al descargar el curso. Intente luego o consulte al administrador del sistema.');
+      this.alertMessage = 'Error al descargar el curso. Intente luego o consulte al administrador del sistema.';
       this.showAlert = true;
     }
   }
@@ -99,22 +93,19 @@ export class cursosServidorComponent {
 
       if (response.ok) {
         const respuestaSRV = await response.json();
-        // Convertir el base64 de la salida en JSON
         const binaryString = atob(respuestaSRV.base64);
-        // Convertir la cadena binaria a una cadena UTF-8
         const utf8String = decodeURIComponent(escape(binaryString));
         const cursoJson = JSON.parse(utf8String);
         console.log(cursoJson);
         this.descargarCurso(cursoJson);
-
       } else {
         console.log('Ha ocurrido un error:', response.status);
-        alert('Error en la búsqueda. Intente luego o consulte al administrador del sistema.');
+        this.alertMessage = 'Error en la búsqueda. Intente luego o consulte al administrador del sistema.';
         this.showAlert = true;
       }
     } catch (error) {
       console.error('Error al realizar la solicitud:', error);
-      alert('Error en la búsqueda. Intente luego o consulte al administrador del sistema.');
+      this.alertMessage = 'Error en la búsqueda. Intente luego o consulte al administrador del sistema.';
       this.showAlert = true;
     }
   }
@@ -133,16 +124,16 @@ export class cursosServidorComponent {
       });
 
       if (response.ok) {
-        var respuesta =  await response.json();
+        var respuesta = await response.json();
         this.servidor = respuesta.nombre;
       } else {
         console.log('Ha ocurrido un error:', response.status);
-        alert('Error en la búsqueda. Intente luego o consulte al administrador del sistema.');
+        this.alertMessage = 'Error en la búsqueda. Intente luego o consulte al administrador del sistema.';
         this.showAlert = true;
       }
     } catch (error) {
       console.error('Error al realizar la solicitud:', error);
-      alert('Error en la búsqueda. Intente luego o consulte al administrador del sistema.');
+      this.alertMessage = 'Error en la búsqueda. Intente luego o consulte al administrador del sistema.';
       this.showAlert = true;
     }
   }
@@ -152,7 +143,6 @@ export class cursosServidorComponent {
   }
 
   async descargarCurso(curso: SchemaSavedData) {
-    // Encontrar el id mayor en el array allData
     const maxId = this.initialSchemaService.allData?.reduce((max, item) => item.id > max ? item.id : max, 0) || 0;
     console.log(maxId);
     curso.id = maxId + 1;
@@ -161,19 +151,19 @@ export class cursosServidorComponent {
     if (ultimaVersionActual) {
       const nuevaVersion = {
         ...ultimaVersionActual,
-        nombre: ultimaVersionActual.nombre || 'Nombre predeterminado', // Proporciona un valor predeterminado
+        nombre: ultimaVersionActual.nombre || 'Nombre predeterminado',
         autor: this.autor,
         version: (ultimaVersionActual.version ?? 0) + 1,
         fechaCreacion: new Date(),
         fechaModificacion: new Date(),
-        schemaVersion: ultimaVersionActual.schemaVersion ?? 1, // Proporciona un valor predeterminado para schemaVersion si es necesario
-        datosGuardados: ultimaVersionActual.datosGuardados || [] // Proporciona un valor predeterminado para datosGuardados si es necesario
+        schemaVersion: ultimaVersionActual.schemaVersion ?? 1,
+        datosGuardados: ultimaVersionActual.datosGuardados || []
       };
 
       curso?.versiones.push(nuevaVersion);
-      delete curso.idGlobal; // Eliminar la propiedad idGlobal
-      delete curso.institucion; // Eliminar la propiedad institucion
-      delete curso.versionGlobal; // Eliminar la propiedad versionGlobal
+      delete curso.idGlobal;
+      delete curso.institucion;
+      delete curso.versionGlobal;
 
       if (!Array.isArray(curso.autores)) {
         curso.autores = [];
@@ -202,22 +192,22 @@ export class cursosServidorComponent {
         if (response.status === 200) {
           this.initialSchemaService.allData?.push(curso);
           console.log('Curso descargado exitosamente');
-          alert("Curso descargado exitosamente. Podrás verlo en el Inicio.")
+          this.alertMessage = "Curso descargado exitosamente. Podrás verlo en el Inicio.";
+          this.showAlert = true;
           this.goHome();
         } else {
           console.log('Ha ocurrido un error, ', response.status);
-          alert('Error al descargar el curso. Intente nuevamente.');
+          this.alertMessage = 'Error al descargar el curso. Intente nuevamente.';
           this.showAlert = true;
         }
       } catch (e) {
-        const alert = document.querySelector('ngb-alert');
-        if (alert)
-          alert.classList.add('show');
         console.error(e);
+        this.alertMessage = 'Error al descargar el curso. Intente nuevamente.';
+        this.showAlert = true;
       }
     } else {
       console.error('No se encontró la última versión del curso.');
-      alert('No se encontró la última versión del curso. Intente nuevamente.');
+      this.alertMessage = 'No se encontró la última versión del curso. Intente nuevamente.';
       this.showAlert = true;
     }
   }
