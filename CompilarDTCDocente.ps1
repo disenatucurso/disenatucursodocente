@@ -11,8 +11,9 @@ write-host "COMPILANDO ANGULAR"
 ng build --configuration production --base-href ./
 
 foreach ($target in $targets) {
-    $dirCompiladoProyecto = "$PSScriptRoot\out\disena-tu-curso-docente-$target\resources\app\"
-    $cursosDeDesarrollo="$PSScriptRoot\out\disena-tu-curso-docente-$target\resources\app\dist\disena-tu-curso-docente\assets\schemasData\"
+    $raizProyectoCompilado="$PSScriptRoot\out\disena-tu-curso-docente-$target"
+    $dirBinarioCompilado = "$raizProyectoCompilado\resources\app\"
+    $cursosDeDesarrollo="$raizProyectoCompilado\resources\app\dist\disena-tu-curso-docente\assets\schemasData\"
 
     write-host "-----------------------------------"
     write-host "COMPILANDO ELECTRON para $target"
@@ -44,22 +45,26 @@ foreach ($target in $targets) {
     write-host "ELIMINANDO ARCHIVOS INNECESARIOS"
     switch ($target) {
         "win32-x64"  {
-            $dependencias="accepts,body-parser,call-bind,content-disposition,content-type,cookie,cookie-signature,cors,depd,destroy,ee-first,encodeurl,escape-html,etag,express,finalhandler,forwarded,fresh,function-bind,get-intrinsic,has,has-symbols,http-errors,iconv-lite,inherits,media-typer,merge-descriptors,methods,mime,mime-db,mime-types,negotiator,object-assign,object-inspect,on-finished,parseurl,path-to-regexp,proxy-addr,qs,range-parser,raw-body,safer-buffer,send,serve-static,setprototypeof,side-channel,statuses,toidentifier,type-is,unpipe,utils-merge,vary"
+            #$dependencias="accepts,body-parser,call-bind,content-disposition,content-type,cookie,cookie-signature,cors,depd,destroy,ee-first,encodeurl,escape-html,etag,express,finalhandler,forwarded,fresh,function-bind,get-intrinsic,has,has-symbols,http-errors,iconv-lite,inherits,media-typer,merge-descriptors,methods,mime,mime-db,mime-types,negotiator,object-assign,object-inspect,on-finished,parseurl,path-to-regexp,proxy-addr,qs,range-parser,raw-body,safer-buffer,send,serve-static,setprototypeof,side-channel,statuses,toidentifier,type-is,unpipe,utils-merge,vary"
             break
         }
         "win32-ia32"   {
-            $dependencias="accepts,body-parser,call-bind,content-disposition,content-type,cookie,cookie-signature,cors,depd,destroy,ee-first,encodeurl,escape-html,etag,express,finalhandler,forwarded,fresh,function-bind,get-intrinsic,has,has-symbols,http-errors,iconv-lite,inherits,media-typer,merge-descriptors,methods,mime,mime-db,mime-types,negotiator,object-assign,object-inspect,on-finished,parseurl,path-to-regexp,proxy-addr,qs,range-parser,raw-body,safer-buffer,send,serve-static,setprototypeof,side-channel,statuses,toidentifier,type-is,unpipe,utils-merge,vary"
-            $dependencias+=",array-flatten,bytes,ipaddr.js,ms,safe-buffer"
+            #$dependencias="accepts,body-parser,call-bind,content-disposition,content-type,cookie,cookie-signature,cors,depd,destroy,ee-first,encodeurl,escape-html,etag,express,finalhandler,forwarded,fresh,function-bind,get-intrinsic,has,has-symbols,http-errors,iconv-lite,inherits,media-typer,merge-descriptors,methods,mime,mime-db,mime-types,negotiator,object-assign,object-inspect,on-finished,parseurl,path-to-regexp,proxy-addr,qs,range-parser,raw-body,safer-buffer,send,serve-static,setprototypeof,side-channel,statuses,toidentifier,type-is,unpipe,utils-merge,vary"
+            #$dependencias+=",array-flatten,bytes,ipaddr.js,ms,safe-buffer"
             break
         }
         "linux-x64"  {
-            $dependencias="accepts,body-parser,call-bind,content-disposition,content-type,cookie,cookie-signature,cors,depd,destroy,ee-first,encodeurl,escape-html,etag,express,finalhandler,forwarded,fresh,function-bind,get-intrinsic,has,has-symbols,http-errors,iconv-lite,inherits,media-typer,merge-descriptors,methods,mime,mime-db,mime-types,negotiator,object-assign,object-inspect,on-finished,parseurl,path-to-regexp,proxy-addr,qs,range-parser,raw-body,safer-buffer,send,serve-static,setprototypeof,side-channel,statuses,toidentifier,type-is,unpipe,utils-merge,vary"
+            #$dependencias="accepts,body-parser,call-bind,content-disposition,content-type,cookie,cookie-signature,cors,depd,destroy,ee-first,encodeurl,escape-html,etag,express,finalhandler,forwarded,fresh,function-bind,get-intrinsic,has,has-symbols,http-errors,iconv-lite,inherits,media-typer,merge-descriptors,methods,mime,mime-db,mime-types,negotiator,object-assign,object-inspect,on-finished,parseurl,path-to-regexp,proxy-addr,qs,range-parser,raw-body,safer-buffer,send,serve-static,setprototypeof,side-channel,statuses,toidentifier,type-is,unpipe,utils-merge,vary"
+            #Copio script para ejecutar en Linux
+            cp "$PSScriptRoot\abrir-disena-tu-curso-docente.sh" "$raizProyectoCompilado"
             break
         }
         "darwin-x64"  {
             $cursosDeDesarrollo="$PSScriptRoot\out\disena-tu-curso-docente-$target\disena-tu-curso-docente.app\Contents\Resources\app\dist\disena-tu-curso-docente\assets\schemasData\"
-            $dirCompiladoProyecto = "$PSScriptRoot\out\disena-tu-curso-docente-$target\disena-tu-curso-docente.app\Contents\Resources\app\"
-            $dependencias="accepts,body-parser,call-bind,content-disposition,content-type,cookie,cookie-signature,cors,depd,destroy,ee-first,encodeurl,escape-html,etag,express,finalhandler,forwarded,fresh,function-bind,get-intrinsic,has,has-symbols,http-errors,iconv-lite,inherits,media-typer,merge-descriptors,methods,mime,mime-db,mime-types,negotiator,object-assign,object-inspect,on-finished,parseurl,path-to-regexp,proxy-addr,qs,range-parser,raw-body,safer-buffer,send,serve-static,setprototypeof,side-channel,statuses,toidentifier,type-is,unpipe,utils-merge,vary"
+            $dirBinarioCompilado = "$PSScriptRoot\out\disena-tu-curso-docente-$target\disena-tu-curso-docente.app\Contents\Resources\app\"
+            #$dependencias="accepts,body-parser,call-bind,content-disposition,content-type,cookie,cookie-signature,cors,depd,destroy,ee-first,encodeurl,escape-html,etag,express,finalhandler,forwarded,fresh,function-bind,get-intrinsic,has,has-symbols,http-errors,iconv-lite,inherits,media-typer,merge-descriptors,methods,mime,mime-db,mime-types,negotiator,object-assign,object-inspect,on-finished,parseurl,path-to-regexp,proxy-addr,qs,range-parser,raw-body,safer-buffer,send,serve-static,setprototypeof,side-channel,statuses,toidentifier,type-is,unpipe,utils-merge,vary"
+            #Copio script para ejecutar en MacOS
+            cp "$PSScriptRoot\disena-tu-curso-docente.sh" "$raizProyectoCompilado"
             break
         }
         default {
@@ -69,9 +74,9 @@ foreach ($target in $targets) {
     }
     #ELIMINACION DE DEPENDENCIAS PARA QUE PESE MENOS, EN LA NUEVA VERSION NO FUNCIONA DEL TODO BIEN
     #$arrayDep = $dependencias -split ','
-    #Get-ChildItem "$dirCompiladoProyecto\node_modules" -Exclude $arrayDep | Remove-Item -Recurse -Force
-
-    Get-ChildItem "$dirCompiladoProyecto" -Exclude dist,ElectronEntry.js,Backend.js,package.json,loading.html,node_modules | Remove-Item -Recurse -Force
+    #Get-ChildItem "$dirBinarioCompilado\node_modules" -Exclude $arrayDep | Remove-Item -Recurse -Force
+    
+    Get-ChildItem "$dirBinarioCompilado" -Exclude dist,ElectronEntry.js,Backend.js,package.json,loading.html,node_modules | Remove-Item -Recurse -Force
     write-host "ELIMINO CURSOS QUE HAYAN VENIDO DESDE DESARROLLO"
     if(test-path -path "$cursosDeDesarrollo"){
         rm "$cursosDeDesarrollo\*"

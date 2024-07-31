@@ -1,4 +1,4 @@
-#Hay que tener 7z en el path para que reconozca el comando 7z
+#Hay que tener 7z.exe en el path para que reconozca el comando 7z
 #Scipt que toma las carpeta compiladas de out/ y genera los comprimidos para subir a drive
 $targets = @()
 $targets += 'darwin-x64'
