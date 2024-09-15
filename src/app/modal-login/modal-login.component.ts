@@ -192,10 +192,10 @@ export class ModalLoginComponent implements OnInit {
       });
 
       if (response.ok) {
-        const responseData = await response.json();
-        const token = responseData.token;
-        console.log('Contraseña recuperada', token);
-        this.activeModal.close({ token: token, urlServidorValue: urlServidorValue });
+        //const responseData = await response.json();
+        //const token = responseData.token;
+        console.log('Contraseña recuperada');
+        this.activeModal.close({ token: "CUIDADO NULL", urlServidorValue: urlServidorValue });
       } else {
         console.log('Ha ocurrido un error:', response.status);
         alert("Error al recuperar la contraseña.");
