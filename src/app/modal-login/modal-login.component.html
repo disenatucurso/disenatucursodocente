@@ -1,19 +1,10 @@
 <div class="modal-header">
   <h4 class="modal-title">{{tittle}}</h4>
-  <button type="button" class="btn-close" aria-label="Close" (click)="activeModal.dismiss('Cross click')">
-  </button>
+  <button type="button" class="btn-close" aria-label="Close" (click)="activeModal.dismiss('Cross click')"></button>
 </div>
+
 <div class="modal-body">
-  <p class="small">Para iniciar sesión debes ingresar el usuario, la contraseña y la url del servidor de cursos correspondiente.</p>
-  <input type='text' class="form-control" id="user" placeholder="Usuario" style="margin: 0.5rem 0;">
-  <div class="input-group" style="margin: 0.5rem 0;">
-    <input id="password" type="password" class="form-control pwd" value="" placeholder="Contraseña">
-    <span class="input-group-btn">
-      <button class="reveal form-control" type="button" (click)="togglePassword()"
-        style="border-top-left-radius: 0px; border-bottom-left-radius: 0px;">
-        <i class="bi bi-eye-slash-fill"></i></button>
-    </span>
-  </div>
+  <p class="small">Para iniciar sesión debes ingresar la URL del servidor y luego el usuario y contraseña correspondiente.</p>
   <div class="input-group my-2">
     <input
         id="urlServidor"
@@ -31,18 +22,35 @@
       <ul class="dropdown-menu">
         <ul class="list-unstyled">
           <li *ngFor="let server of servers">
-            <a class="dropdown-item" href="#" (click)="cargarServidorEnInput(server.url)">{{ server.name }}</a>
+            <a class="dropdown-item" href="#" (click)="cargarServidorEnInput($event, server.url)">{{ server.name }}</a>
           </li>
         </ul>
       </ul>
-
     </div>
     <div id="url-invalida" class="invalid-feedback">La URL ingresada no es válida.</div>
   </div>
 
-  <a class="my-2 small" href="#" (click)="olvidoContrasenia()">¿Olvidó su contraseña?</a>
+  <!-- Sección Usuario solo visible si urlServidor tiene valor -->
+  <section id="section-usuario" *ngIf="urlServidor && urlServidor.trim().length > 0">
+    <input type='text' class="form-control" id="user" placeholder="Usuario" style="margin: 0.5rem 0;" [(ngModel)]="usuario">
+    <div class="input-group" style="margin: 0.5rem 0;">
+      <input id="password" type="password" class="form-control pwd" [(ngModel)]="password" placeholder="Contraseña">
+      <span class="input-group-btn">
+        <button class="reveal form-control" type="button" (click)="togglePassword()"
+          style="border-top-left-radius: 0px; border-bottom-left-radius: 0px;">
+          <i class="bi bi-eye-slash-fill"></i>
+        </button>
+      </span>
+    </div>
+    <a class="my-2 small" href="#" (click)="olvidoContrasenia()">¿Olvidó su contraseña?</a>
+  </section>
 </div>
+
 <div class="modal-footer">
   <button type="button" class="btn btn-outline-gray" (click)="reject()">Cancelar</button>
-  <button type="button" class="btn btn-primary background-primary m-2" (click)="resolve()">Iniciar sesión</button>
+
+  <!-- Botón habilitado solo si hay URL, usuario y contraseña -->
+  <button type="button" class="btn btn-primary background-primary m-2"
+    [disabled]="!urlServidor || !usuario || !password || urlServidor.trim().length === 0 || usuario.trim().length === 0 || password.trim().length === 0"
+    (click)="resolve()">Iniciar sesión</button>
 </div>
