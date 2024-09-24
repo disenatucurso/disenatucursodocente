@@ -9,7 +9,7 @@
   <div class="d-flex flex-row border-bottom justify-content-between">
     <div class="d-flex flex-row align-items-center">
       <i class="bi bi-mortarboard-fill p-2" style="font-size: 1.8rem;"></i>
-      <h1 class="p-2 fw-bolder">Ver cursos</h1>
+      <h1 class="p-2 fw-bolder">Servidor</h1>
     </div>
     <div class="text-center d-flex align-items-center">
       <div>
@@ -27,30 +27,35 @@
   <!-- <p>3</p> -->
   <div class="p-4">
     <div class="container">
-      <div class="row ">
-        <div class="">
-          <div class="card l-bg-green-dark">
-            <div class="card-statistic-3 p-4">
-              <div class="card-icon card-icon-large">
-                <i class="fas bi bi-cloud-arrow-down  px-2"></i>
-              </div>
-              <div class="mb-4">
-                <h5 id="titulo_card" class="mb-0">{{servidor}}</h5>
-                <h6 id="url_card" class="mb-0 mt-2 small">{{urlServidor}}</h6>
-              </div>
-              <div class="row align-items-center mb-2 d-flex">
-                <div class="text-right small">
-                  <span>Aquí podrás buscar y descargar cursos para usarlos en tu computadora.</span>
+        <div class="row ">
+            <div class="">
+                <div class="card l-bg-green-dark">
+                    <div class="card-statistic-3 p-4">
+                        <div class="card-icon card-icon-large">
+                            <i class="fas bi bi-cloud-arrow-down px-2"></i>
+                        </div>
+                        <div class="mb-4">
+                            <h5 id="titulo_card" class="mb-0">{{ servidor }}</h5>
+                            <h6 id="url_card" class="mb-0 mt-2 small">{{ urlServidor }}</h6>
+                        </div>
+                        <div class="row align-items-center mb-2 d-flex">
+                            <div class="text-right small">
+                                <span>Aquí podrás buscar y descargar cursos para usarlos en tu computadora.</span>
+                            </div>
+                        </div>
+                        <!-- Botón de cambiar contraseña -->
+                        <div class="text-right mt-3">
+                            <button class="btn btn-light" (click)="cambiarContrasena()">
+                                Cambiar Contraseña
+                            </button>
+                        </div>
+                    </div>
                 </div>
-              </div>
-
             </div>
-          </div>
         </div>
-
-      </div>
     </div>
-  </div>
+</div>
+
 
   <!-- buscador -->
   <div class="container-card">

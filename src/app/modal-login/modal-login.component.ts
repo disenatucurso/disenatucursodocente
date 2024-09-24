@@ -149,7 +149,8 @@ export class ModalLoginComponent implements OnInit {
     }
   }
 
-  cargarServidorEnInput(event: any ,url: string): void {
+
+  async cargarServidorEnInput(event: any ,url: string): Promise<void> {
     this.urlServidor = url;
     const colTokenServidores = JSON.parse(sessionStorage.getItem('colTokenServidores') || '[]'); // json
 
@@ -160,14 +161,35 @@ export class ModalLoginComponent implements OnInit {
       const token = tokenEntry[url]; // Obtener el token para la URL
       console.log(`Token encontrado para el servidor ${url}: ${token}`);
 
-      this.activeModal.close({ token: token, urlServidorValue: url, username: '' });
-      /*this.router.navigate(['/cursosServidor'], {
-        queryParams: {
-          token: token,
-          servidor: url,
-          autor: "teszt"
+      const apiUrl = url + '/api/validarToken';
+
+      try {
+        const response = await fetch(apiUrl, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json; charset=utf-8',
+            'Authorization': `Bearer ${token}`,
+          }
+        });
+
+        if (response.ok) {
+          console.log('El servidor dice que es un token valido', response.status);
+          //token valido
+          this.activeModal.close({ token: token, urlServidorValue: url, username: '' });
+        } else {
+          console.log('Ha ocurrido un error:', response.status);
+          // Eliminar el token del array
+          const index = colTokenServidores.findIndex(entry => Object.keys(entry)[0] === url);
+          if (index !== -1) {
+              colTokenServidores.splice(index, 1); // Eliminar el token
+              sessionStorage.setItem('colTokenServidores', JSON.stringify(colTokenServidores)); // Actualizar sessionStorage
+              console.log('Token eliminado de colTokenServidores');
+          }
         }
-      });*/
+      } catch (e) {
+        console.error(e);
+      }
+
 
     } else {
       console.log(`El servidor ${url} no está registrado en colTokenServidores.`);
