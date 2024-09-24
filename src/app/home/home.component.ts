@@ -407,6 +407,7 @@ export class HomeComponent {
     var reader = new FileReader();
     reader.onload = async () => {
       if (reader.result) var nuevoCurso = JSON.parse(reader.result.toString());
+
       let headers = new Headers();
       headers.append('Content-Type', 'application/json; charset=utf-8');
       try {
@@ -434,20 +435,24 @@ export class HomeComponent {
             nuevoCurso?.versiones.push(nuevaVersion)
             nuevoCurso.id = idCreado.id;
 
+            //AGREGO PROPIEDADES DE NUEVA VERSION AL IMPORTAR CURSO
+            //Propiedad Autor
             if (!Array.isArray(nuevoCurso.autores)) {
               nuevoCurso.autores = [];
             }
-
             const autor = {
               "username": null,
               "institucion": null,
               "nombre": this.autor
             };
-
             nuevoCurso.autores.push(autor);
-            // Verificar y agregar referencias si no existen
+            //Propiedad Referencias
             if (!nuevoCurso.referencias) {
               nuevoCurso.referencias = { internas: [], externas: [] };
+            }
+            //Propiedad Servidor Central
+            if (!Array.isArray(nuevoCurso.servidorCentral)) {
+              nuevoCurso.servidorCentral = [];
             }
 
             this.modificarCurso(nuevoCurso)
@@ -626,6 +631,11 @@ export class HomeComponent {
     let curso: SchemaSavedData = {
       id: (this.initialSchemaService.allData?.length || 0) + 1,
       servidorCentral:[],
+      autores: [],
+      referencias: { 
+        internas: [], 
+        externas: [] 
+      },
       nombreCurso: this.nombreArchivo,
       versiones: [
         {
@@ -640,22 +650,14 @@ export class HomeComponent {
       ],
       archivos: []
     };
-    if (!Array.isArray(curso.autores)) {
-      curso.autores = [];
-    }
 
+    //Propiedad Autor Offline
     const autor = {
       "username": null,
       "institucion": null,
       "nombre": this.autor
     };
-
-    curso.autores.push(autor);
-
-    // Verificar y agregar referencias si no existen
-    if (!curso.referencias) {
-      curso.referencias = { internas: [], externas: [] };
-    }
+    curso.autores!.push(autor);
 
     let headers = new Headers();
     headers.append('Content-Type', 'application/json; charset=utf-8');

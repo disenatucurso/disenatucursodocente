@@ -165,20 +165,15 @@ export class cursosServidorComponent {
         schemaVersion: ultimaVersionActual.schemaVersion ?? 1,
         datosGuardados: ultimaVersionActual.datosGuardados || []
       };
-
       curso?.versiones.push(nuevaVersion);
 
-      if (!Array.isArray(curso.autores)) {
-        curso.autores = [];
-      }
-
+      //Agrego Autor offline de quien está bajando
       const autor = {
         "username": null,
         "institucion": null,
         "nombre": this.autor
       };
-
-      curso.autores.push(autor);
+      curso.autores!.push(autor);
 
       let headers = new Headers();
       headers.append('Accept', 'application/json');
