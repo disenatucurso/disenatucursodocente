@@ -161,9 +161,6 @@ export class cursosServidorComponent {
       };
 
       curso?.versiones.push(nuevaVersion);
-      delete curso.idGlobal;
-      delete curso.institucion;
-      delete curso.versionGlobal;
 
       if (!Array.isArray(curso.autores)) {
         curso.autores = [];

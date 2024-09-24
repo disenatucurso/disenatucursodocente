@@ -120,9 +120,6 @@ export class HomeComponent {
     modalRef.closed.subscribe({
       next: async (resp) => { // Añadimos async aquí
         const cursoJson = await this.obtenerCurso(idCurso);
-
-        cursoJson.idGlobal = null; // Agregar el atributo idGlobal con valor null
-
         let stringCurso = JSON.stringify(cursoJson);
         //const cursoB64 = btoa(stringCurso); // Convertir el JSON a base64
         const cursoB64 = btoa(unescape(encodeURIComponent(stringCurso)));
@@ -431,9 +428,6 @@ export class HomeComponent {
             }
             nuevoCurso?.versiones.push(nuevaVersion)
             nuevoCurso.id = idCreado.id;
-            delete nuevoCurso.idGlobal; // Eliminar la propiedad idGlobal
-            delete nuevoCurso.institucion; // Eliminar la propiedad idGlobal
-            delete nuevoCurso.versionGlobal;
 
             if (!Array.isArray(nuevoCurso.autores)) {
               nuevoCurso.autores = [];
@@ -626,9 +620,8 @@ export class HomeComponent {
       this.initDatosGuardados();
     let curso: SchemaSavedData = {
       id: (this.initialSchemaService.allData?.length || 0) + 1,
-      idGlobal: null,
+      servidorCentral:[],
       nombreCurso: this.nombreArchivo,
-      institucion: '',
       versiones: [
         {
           schemaVersion: 1,

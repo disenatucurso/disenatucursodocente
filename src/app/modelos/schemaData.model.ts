@@ -2,10 +2,8 @@ import { Ubicacion } from './schema.model';
 
 export interface SchemaSavedData {
   id: number;
-  idGlobal?: number | null;
-  versionGlobal?: number;
+  servidorCentral: InfoServidorCentral[];
   nombreCurso: string;
-  institucion?: string;
   versiones: Version[];
   archivos: Archivo[];
   autores?:Autores[];
@@ -76,5 +74,11 @@ export interface ReferenciasInternas {
   idGlobal: number;
   versionGlobal: string;
   username: string;
+  institucion: string;
+}
+
+export interface InfoServidorCentral {
+  idGlobal: number;
+  versionGlobal: number;
   institucion: string;
 }

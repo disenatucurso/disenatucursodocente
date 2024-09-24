@@ -118,8 +118,9 @@
 
             </div>
             <div class="card-img-containter">
-              <img src="assets/img/empty_card_cursos.svg" class="card-img" alt="Card cursos" *ngIf="cursos?.idGlobal == null" />
-              <img src="assets/img/empty_card_cursos_servidor.svg" class="card-img" alt="Card cursos" *ngIf="cursos?.idGlobal && cursos?.idGlobal !== null" />
+              <img src="assets/img/empty_card_cursos.svg" class="card-img" alt="Card cursos"/>
+              <!--<img src="assets/img/empty_card_cursos.svg" class="card-img" alt="Card cursos" *ngIf="cursos?.idGlobal == null" />
+              <img src="assets/img/empty_card_cursos_servidor.svg" class="card-img" alt="Card cursos" *ngIf="cursos?.idGlobal && cursos?.idGlobal !== null" />-->
             </div>
 
             <div class="card-body">
@@ -127,12 +128,15 @@
                 <small>Version: {{cursos.versiones.at(-1)?.version}}</small>
                 <small>Fecha de creación: {{cursos.versiones.at(-1)?.fechaCreacion | date:'yyyy-MM-dd'}}</small>
                 <small>Última modificación: {{cursos.versiones.at(-1)?.fechaModificacion | date:'yyyy-MM-dd' }}</small>
-                <small *ngIf="cursos?.idGlobal && cursos?.institucion !== null">
+                <!--<small *ngIf="cursos?.idGlobal && cursos?.institucion !== null">
                   Institución: {{ getInstitutionName(cursos?.institucion) }}
-                </small>
+                </small>-->
 
               </div>
-              <div class="d-flex" *ngIf="cursos?.idGlobal == null">
+              <button class="btn btn-outline-primary small mt-2" style="font-size: 12px;" type="button" (click)="subirPrimeraVez(cursos.id,$event)">
+                <i class="bi bi-cloud-upload-fill" style="margin-right: 0.25rem;"></i> SUBIR A SERVIDOR
+            </button>
+              <!--<div class="d-flex" *ngIf="cursos?.idGlobal == null">
                 <button class="btn btn-outline-primary small mt-2" style="font-size: 12px;" type="button" (click)="subirPrimeraVez(cursos.id,$event)">
                     <i class="bi bi-cloud-upload-fill" style="margin-right: 0.25rem;"></i> SUBIR A SERVIDOR
                 </button>
@@ -141,7 +145,7 @@
                 <button class="btn btn-outline-primary small mt-2" style="font-size: 12px;" type="button" (click)="subirCambios(cursos.id,$event)">
                     <i class="bi bi-arrow-up-circle-fill" style="margin-right: 0.25rem;"></i> SUBIR MIS CAMBIOS
                 </button>
-              </div>
+              </div>-->
 
 
             </div>

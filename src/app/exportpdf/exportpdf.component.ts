@@ -82,9 +82,9 @@ export class ExportpdfComponent{
     newGeneratePdf(savedDataCruso:SchemaSavedData,versionSeleccionada:Version){
         this.pdf.content.push({text: savedDataCruso.nombreCurso,style: 'header' });
         this.pdf.content.push({text: "Autor: " + versionSeleccionada.autor,style: 'body' });
-        if (savedDataCruso.institucion){
+        /*if (savedDataCruso.institucion){
             this.pdf.content.push({text: "Institución: " + savedDataCruso.institucion,style: 'body' });
-        }
+        }*/
         this.pdf.content.push({text: '\n',style: 'body' });
         let schema : Esquema = this.initialSchemaService.defaultSchema!;
         for(let etapa of schema.etapas){
