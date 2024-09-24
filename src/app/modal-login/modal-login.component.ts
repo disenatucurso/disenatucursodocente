@@ -1,8 +1,7 @@
 import { Component, Input, OnInit, Output } from '@angular/core';
-import { NgbActiveModal,NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { Router } from '@angular/router';
 import { InitialSchemaLoaderService } from '../servicios/initial-schema-loader.service';
-
 interface Server {
   name: string;
   url: string;
@@ -17,14 +16,23 @@ export class ModalLoginComponent implements OnInit {
   @Input() tittle: string = '';
   @Input() body: string = '';
   @Input() inputDisclaimer: string[] = [];
+
   @Output() salida: string[] = [];
   servers: Server[] = [];
+
+  // Definir propiedades para usuario y contraseña
+  usuario: string = '';
+  password: string = '';
+
+  urlServidor: string = '';
+  urlServidorInvalid: boolean = false;
+
 
   constructor(
     private modalService: NgbModal,
     public activeModal: NgbActiveModal,
     private router: Router,
-    public initialSchemaService: InitialSchemaLoaderService
+    public initialSchemaService: InitialSchemaLoaderService,
   ) {}
 
   togglePassword() {
@@ -35,9 +43,6 @@ export class ModalLoginComponent implements OnInit {
       pwdInput.type = 'password';
     }
   }
-
-  urlServidor: string = '';
-  urlServidorInvalid: boolean = false;
 
   async ngOnInit(): Promise<void> {
     let headers = new Headers();
@@ -64,9 +69,9 @@ export class ModalLoginComponent implements OnInit {
   }
 
   async resolve(): Promise<void> {
-    const userValue = (document.querySelector("#user") as HTMLInputElement)?.value;
-    const passwordValue = (document.querySelector("#password") as HTMLInputElement)?.value;
-    const urlServidorValue = (document.querySelector("#urlServidor") as HTMLInputElement)?.value;
+    const userValue = this.usuario;
+    const passwordValue = this.password;
+    const urlServidorValue = this.urlServidor;
 
     if (!userValue || !passwordValue || !urlServidorValue) {
       alert("Por favor, complete todos los campos.");
@@ -120,7 +125,19 @@ export class ModalLoginComponent implements OnInit {
       if (response.ok) {
         const responseData = await response.json();
         const token = responseData.token;
+        this.salida.push(token);
+        let servidorToken = {};
+        servidorToken[urlServidorValue] = token;
+
+        // Añadir el nuevo objeto al array
+        let colTokenServidores = JSON.parse(sessionStorage.getItem('colTokenServidores') || '[]');
+        colTokenServidores.push(servidorToken);
+
+        sessionStorage.setItem('colTokenServidores', JSON.stringify(colTokenServidores));
+
+        // this.globalDataService.setColTokenServidores([servidorToken]); // Actualiza colTokenServidores en el servicio
         console.log('Login exitoso', token);
+
         this.activeModal.close({ token: token, urlServidorValue: urlServidorValue, username: userValue });
       } else {
         console.log('Ha ocurrido un error:', response.status);
@@ -132,16 +149,34 @@ export class ModalLoginComponent implements OnInit {
     }
   }
 
-  cargarServidorEnInput(url: string): void {
-    const inputServidor = document.querySelector("#urlServidor") as HTMLInputElement;
-    if (inputServidor) {
-      inputServidor.value = url;
+  cargarServidorEnInput(event: any ,url: string): void {
+    this.urlServidor = url;
+    const colTokenServidores = JSON.parse(sessionStorage.getItem('colTokenServidores') || '[]'); // json
+
+    // Buscar el token asociado a la URL en colTokenServidores
+    const tokenEntry = colTokenServidores.find(entry => Object.keys(entry)[0] === url);
+
+    if (tokenEntry) {
+      const token = tokenEntry[url]; // Obtener el token para la URL
+      console.log(`Token encontrado para el servidor ${url}: ${token}`);
+
+      // this.activeModal.close({ token: token, urlServidorValue: url, username: '' });
+      this.router.navigate(['/cursosServidor'], {
+        queryParams: {
+          token: token,
+          servidor: url,
+          autor: "teszt"
+        }
+      });
+
+    } else {
+      console.log(`El servidor ${url} no está registrado en colTokenServidores.`);
     }
   }
 
   async olvidoContrasenia(): Promise<void> {
-    const userValue = (document.querySelector("#user") as HTMLInputElement)?.value;
-    const urlServidorValue = (document.querySelector("#urlServidor") as HTMLInputElement)?.value;
+    const userValue = this.usuario;
+    const urlServidorValue = this.urlServidor;
 
     if (!userValue || !urlServidorValue) {
       alert("Por favor, ingrese su usuario y la URL del servidor.");
@@ -192,8 +227,6 @@ export class ModalLoginComponent implements OnInit {
       });
 
       if (response.ok) {
-        //const responseData = await response.json();
-        //const token = responseData.token;
         console.log('Contraseña recuperada');
         this.activeModal.close({ token: "CUIDADO NULL", urlServidorValue: urlServidorValue });
       } else {
@@ -220,17 +253,15 @@ export class ModalLoginComponent implements OnInit {
       });
 
       if (response.ok) {
-        var respuesta =  await response.json();
+        const respuesta =  await response.json();
         return respuesta.nombre;
       } else {
         console.log('Ha ocurrido un error:', response.status);
         alert('Error en la búsqueda. Intente luego o consulte al administrador del sistema.');
-
       }
     } catch (error) {
       console.error('Error al realizar la solicitud:', error);
       alert('Error en la búsqueda. Intente luego o consulte al administrador del sistema.');
-
     }
   }
 

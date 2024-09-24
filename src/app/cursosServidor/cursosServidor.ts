@@ -1,6 +1,6 @@
-import { Component, HostListener } from '@angular/core';
+import { Component } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { NgbModal, NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { InitialSchemaLoaderService } from '../servicios/initial-schema-loader.service';
 import { SchemaSavedData } from '../modelos/schemaData.model';
 
@@ -21,7 +21,7 @@ export class cursosServidorComponent {
   showAlert: boolean = false; // Variable para controlar la visibilidad del alert
   alertMessage: string = '';  // Variable para almacenar el mensaje de error
 
-  constructor(private modalService: NgbModal, private router: Router,
+  constructor( private router: Router,
               public initialSchemaService: InitialSchemaLoaderService,
               private route: ActivatedRoute) {}
 
@@ -30,12 +30,18 @@ export class cursosServidorComponent {
       this.token = params['token'];
       this.urlServidor = params['servidor'];
       this.autor = params['autor'];
-      console.log('Token:', this.token);
-      console.log('URL del servidor:', this.urlServidor);
-    });
 
-    this.getNombre(this.urlServidor);
+      if (!this.token || !this.urlServidor) {
+        console.error('Faltan parámetros necesarios para el componente.');
+        // Podrías redirigir o mostrar un mensaje de error aquí
+      } else {
+        console.log('Token:', this.token);
+        console.log('URL del servidor:', this.urlServidor);
+        this.getNombre(this.urlServidor);
+      }
+    });
   }
+
 
   onSubmit(event: Event) {
     event.preventDefault();
@@ -139,7 +145,7 @@ export class cursosServidorComponent {
   }
 
   goHome() {
-    this.router.navigate(['/']);
+    this.router.navigate(['/home']); // Asegúrate de que redirige a la ruta correcta
   }
 
   async descargarCurso(curso: SchemaSavedData) {

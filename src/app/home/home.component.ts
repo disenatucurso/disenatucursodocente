@@ -16,7 +16,6 @@ import { ModalNombreComponent } from '../modal/modal-nombre/ModalNombre';
 import { GrupoDatoFijo } from '../modelos/schema.model';
 import { InformacionGuardada, SchemaSavedData, Version, Referencias, ReferenciasInternas } from '../modelos/schemaData.model';
 import { InitialSchemaLoaderService } from '../servicios/initial-schema-loader.service';
-
 interface Server {
   name: string;
   url: string;
@@ -48,11 +47,17 @@ export class HomeComponent {
   alertMessage: string = '';  // Variable para almacenar el mensaje de error
 
 
-  constructor(private modalService: NgbModal, private router: Router,
-    public initialSchemaService: InitialSchemaLoaderService) { }
+  constructor(
+    private modalService: NgbModal,
+    private router: Router,
+    public initialSchemaService: InitialSchemaLoaderService
+  ) {}
 
   async ngOnInit(): Promise<void> {
     //remuevo el mensaje de error que se carga por defecto, se muestra poniendole la clase .show
+    let colTokenServidores = JSON.parse(sessionStorage.getItem('colTokenServidores') || '[]');
+    console.log(colTokenServidores)
+
     const alert = document.querySelector('ngb-alert')
     if (alert)
       alert.classList.remove('show')
@@ -800,6 +805,7 @@ export class HomeComponent {
       scrollable: false,
     });
     modalRef.componentInstance.tittle = 'Iniciar sesión';
+
     modalRef.componentInstance.inputDisclaimer[0] = 'Email';
     modalRef.componentInstance.inputDisclaimer[1] = 'Contraseña';
     modalRef.componentInstance.inputDisclaimer[2] = 'Url del servidor';
@@ -807,9 +813,21 @@ export class HomeComponent {
     //Control Resolve with Observable
     modalRef.closed.subscribe({
       next: (resp) => {
-        this.token = resp.token
-        this.urlServidor = resp.urlServidorValue
-        this.router.navigate(['/cursosServidor'], { queryParams: { token: resp.token, servidor: resp.urlServidorValue, autor: this.autor } });
+        this.token = resp.token;
+        this.urlServidor = resp.urlServidorValue;
+        this.autor = "seba"
+        // Verifica que el token y la URL del servidor sean válidos antes de redirigir
+        if (this.token && this.urlServidor) {
+          this.router.navigate(['/cursosServidor'], {
+            queryParams: {
+              token: resp.token,
+              servidor: resp.urlServidorValue,
+              autor: this.autor
+            }
+          });
+        } else {
+          console.error('Token o URL del servidor no válidos:', this.token, this.urlServidor);
+        }
       },
       error: () => {
         //Nunca se llama aca

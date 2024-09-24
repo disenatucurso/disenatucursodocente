@@ -28,7 +28,7 @@ function initWindow() {
 
     //Mientras levanta el Backend, muestro Loading
     appWindow.loadFile('loading.html');
-    appWindow.setMenu(null);
+    // appWindow.setMenu(null);
     appWindow.maximize();
     appWindow.show();
     //Inicia el Backend en otro thread
