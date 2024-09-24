@@ -804,36 +804,37 @@ export class HomeComponent {
     const modalRef = this.modalService.open(ModalLoginComponent, {
       scrollable: false,
     });
+
     modalRef.componentInstance.tittle = 'Iniciar sesión';
+    modalRef.componentInstance.inputDisclaimer = ['Email', 'Contraseña', 'Url del servidor'];
 
-    modalRef.componentInstance.inputDisclaimer[0] = 'Email';
-    modalRef.componentInstance.inputDisclaimer[1] = 'Contraseña';
-    modalRef.componentInstance.inputDisclaimer[2] = 'Url del servidor';
-
-    //Control Resolve with Observable
     modalRef.closed.subscribe({
       next: (resp) => {
-        this.token = resp.token;
-        this.urlServidor = resp.urlServidorValue;
-        this.autor = "seba"
-        // Verifica que el token y la URL del servidor sean válidos antes de redirigir
-        if (this.token && this.urlServidor) {
-          this.router.navigate(['/cursosServidor'], {
-            queryParams: {
-              token: resp.token,
-              servidor: resp.urlServidorValue,
-              autor: this.autor
-            }
-          });
+        if (resp) { // Comprobar que la respuesta no sea null
+          this.token = resp.token;
+          this.urlServidor = resp.urlServidorValue;
+
+          // Verifica que el token y la URL del servidor sean válidos antes de redirigir
+          if (this.token && this.urlServidor) {
+            this.router.navigate(['/cursosServidor'], {
+              queryParams: {
+                token: this.token,
+                servidor: this.urlServidor,
+                autor: this.autor
+              }
+            });
+          } else {
+            console.error('Token o URL del servidor no válidos:', this.token, this.urlServidor);
+          }
         } else {
-          console.error('Token o URL del servidor no válidos:', this.token, this.urlServidor);
+          console.error('La respuesta del modal fue nula.');
         }
       },
-      error: () => {
-        //Nunca se llama aca
+      error: (err) => {
+        console.error('Error al cerrar el modal:', err);
       },
     });
-  }
+}
 
   muestroHeader() {
     let vuelta = this.initialSchemaService.loadedData !== undefined;
