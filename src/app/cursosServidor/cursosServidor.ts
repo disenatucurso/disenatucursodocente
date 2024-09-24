@@ -214,4 +214,8 @@ export class cursosServidorComponent {
       this.showAlert = true;
     }
   }
+
+  cambiarContrasena(){
+
+  }
 }
