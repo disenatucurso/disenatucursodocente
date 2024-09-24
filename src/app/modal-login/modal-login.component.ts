@@ -160,14 +160,14 @@ export class ModalLoginComponent implements OnInit {
       const token = tokenEntry[url]; // Obtener el token para la URL
       console.log(`Token encontrado para el servidor ${url}: ${token}`);
 
-      // this.activeModal.close({ token: token, urlServidorValue: url, username: '' });
-      this.router.navigate(['/cursosServidor'], {
+      this.activeModal.close({ token: token, urlServidorValue: url, username: '' });
+      /*this.router.navigate(['/cursosServidor'], {
         queryParams: {
           token: token,
           servidor: url,
           autor: "teszt"
         }
-      });
+      });*/
 
     } else {
       console.log(`El servidor ${url} no está registrado en colTokenServidores.`);

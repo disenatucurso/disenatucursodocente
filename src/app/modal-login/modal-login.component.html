@@ -22,7 +22,7 @@
       <ul class="dropdown-menu">
         <ul class="list-unstyled">
           <li *ngFor="let server of servers">
-            <a class="dropdown-item" href="#" (click)="cargarServidorEnInput($event, server.url)">{{ server.name }}</a>
+            <a class="dropdown-item" (click)="cargarServidorEnInput($event, server.url)">{{ server.name }}</a>
           </li>
         </ul>
       </ul>
