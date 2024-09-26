@@ -3,6 +3,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { InitialSchemaLoaderService } from '../servicios/initial-schema-loader.service';
 import { SchemaSavedData } from '../modelos/schemaData.model';
+import { ModalChangePasswordComponent } from '../modal-change-password/modal-change-password.component';
 
 @Component({
   selector: 'app-cursosServidor',
@@ -22,6 +23,7 @@ export class cursosServidorComponent {
   alertMessage: string = '';  // Variable para almacenar el mensaje de error
 
   constructor( private router: Router,
+              private modalService: NgbModal,
               public initialSchemaService: InitialSchemaLoaderService,
               private route: ActivatedRoute) {}
 
@@ -211,6 +213,24 @@ export class cursosServidorComponent {
   }
 
   cambiarContrasena(){
+    const modalRef = this.modalService.open(ModalChangePasswordComponent, {
+      scrollable: false,
+    });
 
+    modalRef.componentInstance.urlServidor = this.urlServidor;
+    modalRef.componentInstance.token = this.token;
+
+    //Control Resolve with Observable
+    modalRef.closed.subscribe({
+      next: (resp) => {
+        if (resp.length > 0) {
+          console.log(resp);
+
+        }
+      },
+      error: () => {
+        //Nunca se llama aca
+      }
+    });
   }
 }

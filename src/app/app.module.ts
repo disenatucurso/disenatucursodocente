@@ -20,6 +20,7 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { HomeComponent } from './home/home.component';
 import { ReporteComponent } from './reporte/reporte.component';
 import { ModalLoginComponent } from './modal-login/modal-login.component';
+import { ModalChangePasswordComponent } from './modal-change-password/modal-change-password.component';
 
 
 export function initConfig(loaderService : InitialSchemaLoaderService) {
@@ -47,7 +48,8 @@ export function initConfig(loaderService : InitialSchemaLoaderService) {
     cursosServidorComponent,
     ExportpdfComponent,
     ReporteComponent,
-    ModalLoginComponent
+    ModalLoginComponent,
+    ModalChangePasswordComponent
   ],
   imports: [
     BrowserModule,
