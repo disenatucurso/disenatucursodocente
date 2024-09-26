@@ -1,10 +1,16 @@
-import { Component, Input, OnInit, Output } from '@angular/core';
+import { Component, Input, OnInit, Output, ViewChild, TemplateRef } from '@angular/core';
 import { NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { Router } from '@angular/router';
 import { InitialSchemaLoaderService } from '../servicios/initial-schema-loader.service';
+
 interface Server {
   name: string;
   url: string;
+  isValid?: boolean;
+}
+// Definimos una interfaz para el objeto de token de servidor
+interface ServerToken {
+  [url: string]: string;
 }
 
 @Component({
@@ -14,19 +20,17 @@ interface Server {
 })
 export class ModalLoginComponent implements OnInit {
   @Input() tittle: string = '';
-  @Input() body: string = '';
-  @Input() inputDisclaimer: string[] = [];
+  @ViewChild('loginFormModal') loginFormModal!: TemplateRef<any>;
+  @ViewChild('errorModal') errorModal!: TemplateRef<any>;
 
-  @Output() salida: string[] = [];
   servers: Server[] = [];
+  showAddServerForm: boolean = false;
+  newServerUrl: string = '';
+  selectedServer: Server | null = null;
 
-  // Definir propiedades para usuario y contraseña
   usuario: string = '';
   password: string = '';
-
-  urlServidor: string = '';
-  urlServidorInvalid: boolean = false;
-
+  showPassword: boolean = false;
 
   constructor(
     private modalService: NgbModal,
@@ -35,83 +39,100 @@ export class ModalLoginComponent implements OnInit {
     public initialSchemaService: InitialSchemaLoaderService,
   ) {}
 
-  togglePassword() {
-    const pwdInput = document.querySelector('.pwd') as HTMLInputElement;
-    if (pwdInput.type === 'password') {
-      pwdInput.type = 'text';
-    } else {
-      pwdInput.type = 'password';
-    }
-  }
-
   async ngOnInit(): Promise<void> {
-    let headers = new Headers();
-    headers.append('Accept', 'application/json');
-
     try {
-      const response = await fetch('http://localhost:' + this.initialSchemaService.puertoBackend + '/servers', {
-        method: 'GET',
-        headers: headers,
-        mode: 'cors',
-      });
-      if (response.status === 200) {
+      const response = await fetch('http://localhost:' + this.initialSchemaService.puertoBackend + '/servers');
+      if (response.ok) {
         this.servers = await response.json();
+        for(let server of this.servers){
+          let tokenAlmacenado=this.getServerToken(server.url);
+          if(tokenAlmacenado!== null){
+            let tokenValido = await this.validarJWTToken(tokenAlmacenado,server.url);
+            if(tokenValido){
+              server.isValid=true;
+            }
+            else{
+              this.removeServerToken(server.url);
+            }
+          }
+        }
+        console.log(this.servers);
         console.log('Servidores obtenidos exitosamente', this.servers);
       } else {
         console.log('Ha ocurrido un error, ', response.status);
       }
     } catch (e) {
-      const alert = document.querySelector('ngb-alert');
-      if (alert)
-        alert.classList.add('show');
       console.error(e);
     }
   }
 
-  async resolve(): Promise<void> {
-    const userValue = this.usuario;
-    const passwordValue = this.password;
-    const urlServidorValue = this.urlServidor;
+  togglePassword() {
+    this.showPassword = !this.showPassword;
+  }
 
-    if (!userValue || !passwordValue || !urlServidorValue) {
-      alert("Por favor, complete todos los campos.");
-      return;
-    } else {
-      this.salida.push(userValue);
-      this.salida.push(passwordValue);
-      this.salida.push(urlServidorValue);
-    }
+  async addNewServer() {
+    if (this.newServerUrl) {
+      let newServerName = await this.callServerForName(this.newServerUrl);
+      if(newServerName!==null){
+        const existingServer = this.servers.find(server => server.url === this.newServerUrl);
+        if(!existingServer){
+          const newServer: Server = {
+            name: newServerName,
+            url: this.newServerUrl,
+            isValid: false
+          };        
+          const serversCopy = JSON.parse(JSON.stringify(this.servers));
+          serversCopy.push(newServer);
 
-    const serverExists = this.servers.some(server => server.url === urlServidorValue);
-
-    if (!serverExists) {
-      const serverName = await this.getNombre(urlServidorValue);
-      if (serverName) {
-        this.servers.push({ name: serverName, url: urlServidorValue });
-
-        let headers = new Headers();
-        headers.append('Accept', 'application/json');
-        headers.append('Content-Type', 'application/json');
-        try {
-          const response = await fetch(`http://localhost:` + this.initialSchemaService.puertoBackend + `/servers`, {
-            method: 'PUT',
-            headers: headers,
-            mode: 'cors',
-            body: JSON.stringify({
-              servers: this.servers,
-            }),
-          });
-          if (response.status === 200)
-            console.log('Servidores actualizados exitosamente');
-          else console.log('Ha ocurrido un error, ', response.status);
-        } catch (e) {
-          console.error(e);
+          try {
+            const response = await fetch(`http://localhost:${this.initialSchemaService.puertoBackend}/servers`, {
+              method: 'PUT',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({ servers: serversCopy }),
+            });
+            
+            if (response.ok) {
+              console.log('Servidor agregado exitosamente');
+              this.showAddServerForm = false;
+              this.newServerUrl = '';
+              this.servers.push(newServer);
+            } else {
+              console.log('Ha ocurrido un error al agregar el servidorr', response.status);
+              this.modalService.open(this.errorModal);
+            }
+          } catch (e) {
+            this.modalService.open(this.errorModal);
+            console.error(e);
+          }
         }
       }
+      else{
+        this.modalService.open(this.errorModal);
+      }
     }
+  }
 
-    const requestBody = { username: userValue, password: passwordValue };
-    const apiUrl = urlServidorValue + '/api/login';
+  loginToServer(server: Server) {
+    this.selectedServer = server;
+    this.modalService.open(this.loginFormModal);
+  }
+  accessToServer(server:Server){
+    this.selectedServer = server;
+    this.resolverModalOK();
+  }
+
+  resolverModalOK(){
+    let token =  this.getServerToken(this.selectedServer!.url)
+    this.activeModal.close({ token: token, urlServidorValue: this.selectedServer!.url, username: '' });
+  }
+
+  async loginToSelectedServer() {
+    if (!this.selectedServer) return;
+
+    const requestBody = { username: this.usuario, password: this.password };
+    const apiUrl = this.selectedServer.url + '/api/login';
 
     try {
       const response = await fetch(apiUrl, {
@@ -125,20 +146,16 @@ export class ModalLoginComponent implements OnInit {
       if (response.ok) {
         const responseData = await response.json();
         const token = responseData.token;
-        this.salida.push(token);
-        let servidorToken = {};
-        servidorToken[urlServidorValue] = token;
+        //url: string, token: string
+        this.addServerToken(this.selectedServer.url,token);
+        /*let colTokenServidores = JSON.parse(sessionStorage.getItem('colTokenServidores') || '[]');
+        colTokenServidores.push({ [this.selectedServer.url]: token });
+        sessionStorage.setItem('colTokenServidores', JSON.stringify(colTokenServidores));*/
 
-        // Añadir el nuevo objeto al array
-        let colTokenServidores = JSON.parse(sessionStorage.getItem('colTokenServidores') || '[]');
-        colTokenServidores.push(servidorToken);
-
-        sessionStorage.setItem('colTokenServidores', JSON.stringify(colTokenServidores));
-
-        // this.globalDataService.setColTokenServidores([servidorToken]); // Actualiza colTokenServidores en el servicio
+        this.selectedServer.isValid = true;
+        this.modalService.dismissAll();
         console.log('Login exitoso', token);
-
-        this.activeModal.close({ token: token, urlServidorValue: urlServidorValue, username: userValue });
+        this.resolverModalOK();
       } else {
         console.log('Ha ocurrido un error:', response.status);
         alert("Error al iniciar sesión.");
@@ -149,95 +166,14 @@ export class ModalLoginComponent implements OnInit {
     }
   }
 
-
-  async cargarServidorEnInput(event: any ,url: string): Promise<void> {
-    this.urlServidor = url;
-    const colTokenServidores = JSON.parse(sessionStorage.getItem('colTokenServidores') || '[]'); // json
-
-    // Buscar el token asociado a la URL en colTokenServidores
-    const tokenEntry = colTokenServidores.find(entry => Object.keys(entry)[0] === url);
-
-    if (tokenEntry) {
-      const token = tokenEntry[url]; // Obtener el token para la URL
-      console.log(`Token encontrado para el servidor ${url}: ${token}`);
-
-      const apiUrl = url + '/api/validarToken';
-
-      try {
-        const response = await fetch(apiUrl, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json; charset=utf-8',
-            'Authorization': `Bearer ${token}`,
-          }
-        });
-
-        if (response.ok) {
-          console.log('El servidor dice que es un token valido', response.status);
-          //token valido
-          this.activeModal.close({ token: token, urlServidorValue: url, username: '' });
-        } else {
-          console.log('Ha ocurrido un error:', response.status);
-          // Eliminar el token del array
-          const index = colTokenServidores.findIndex(entry => Object.keys(entry)[0] === url);
-          if (index !== -1) {
-              colTokenServidores.splice(index, 1); // Eliminar el token
-              sessionStorage.setItem('colTokenServidores', JSON.stringify(colTokenServidores)); // Actualizar sessionStorage
-              console.log('Token eliminado de colTokenServidores');
-          }
-        }
-      } catch (e) {
-        console.error(e);
-      }
-
-
-    } else {
-      console.log(`El servidor ${url} no está registrado en colTokenServidores.`);
-    }
-  }
-
-  async olvidoContrasenia(): Promise<void> {
-    const userValue = this.usuario;
-    const urlServidorValue = this.urlServidor;
-
-    if (!userValue || !urlServidorValue) {
-      alert("Por favor, ingrese su usuario y la URL del servidor.");
+  async olvidoContrasenia() {
+    if (!this.selectedServer || !this.usuario) {
+      alert("Por favor, ingrese su usuario.");
       return;
-    } else {
-      this.salida.push(userValue);
-      this.salida.push(urlServidorValue);
     }
 
-    const serverExists = this.servers.some(server => server.url === urlServidorValue);
-
-    if (!serverExists) {
-      const serverName = prompt("Ingrese el nombre del servidor:", "Servidor");
-      if (serverName) {
-        this.servers.push({ name: serverName, url: urlServidorValue });
-
-        let headers = new Headers();
-        headers.append('Accept', 'application/json');
-        headers.append('Content-Type', 'application/json');
-        try {
-          const response = await fetch(`http://localhost:` + this.initialSchemaService.puertoBackend + `/servers`, {
-            method: 'PUT',
-            headers: headers,
-            mode: 'cors',
-            body: JSON.stringify({
-              servers: this.servers,
-            }),
-          });
-          if (response.status === 200)
-            console.log('Servidores actualizados exitosamente');
-          else console.log('Ha ocurrido un error, ', response.status);
-        } catch (e) {
-          console.error(e);
-        }
-      }
-    }
-
-    const requestBody = { username: userValue };
-    const apiUrl = urlServidorValue + '/api/forgotPass';
+    const requestBody = { username: this.usuario };
+    const apiUrl = this.selectedServer.url + '/api/forgotPass';
 
     try {
       const response = await fetch(apiUrl, {
@@ -250,7 +186,7 @@ export class ModalLoginComponent implements OnInit {
 
       if (response.ok) {
         console.log('Contraseña recuperada');
-        this.activeModal.close({ token: "CUIDADO NULL", urlServidorValue: urlServidorValue });
+        alert("Se ha enviado un correo con instrucciones para recuperar su contraseña.");
       } else {
         console.log('Ha ocurrido un error:', response.status);
         alert("Error al recuperar la contraseña.");
@@ -261,7 +197,80 @@ export class ModalLoginComponent implements OnInit {
     }
   }
 
-  async getNombre(urlServidor: string) {
+  resolve() {
+    console.log("resolve generico");
+    /*if (this.selectedServer) {
+      this.activeModal.close({ urlServidorValue: this.selectedServer.url });
+    }*/
+  }
+
+  reject() {
+    this.activeModal.dismiss('Cancelar');
+  }
+
+
+  //FUNCIONES SESSION STORAGE
+  // Función para obtener todos los tokens de servidores almacenados
+  getServerTokens(): ServerToken[] {
+    const tokens = sessionStorage.getItem('colTokenServidores');
+    return tokens ? JSON.parse(tokens) : [];
+  }
+
+  // Función para agregar un nuevo token de servidor
+  addServerToken(url: string, token: string): void {
+    const serverTokens = this.getServerTokens();
+    serverTokens.push({ [url]: token });
+    sessionStorage.setItem('colTokenServidores', JSON.stringify(serverTokens));
+  }
+
+  // Función para actualizar un token de servidor existente
+  /*updateServerToken(url: string, newToken: string): void {
+    const serverTokens = this.getServerTokens();
+    const index = serverTokens.findIndex(token => Object.keys(token)[0] === url);
+    if (index !== -1) {
+      serverTokens[index] = { [url]: newToken };
+      sessionStorage.setItem('colTokenServidores', JSON.stringify(serverTokens));
+    } else {
+      console.warn(`No se encontró un token para la URL: ${url}`);
+    }
+  }*/
+
+  // Función para remover un token de servidor
+  removeServerToken(url: string): void {
+    const serverTokens = this.getServerTokens();
+    const filteredTokens = serverTokens.filter(token => Object.keys(token)[0] !== url);
+    sessionStorage.setItem('colTokenServidores', JSON.stringify(filteredTokens));
+  }
+
+  // Función para obtener el token de un servidor específico
+  getServerToken(url: string): string | null {
+    const serverTokens = this.getServerTokens();
+    const serverToken = serverTokens.find(token => Object.keys(token)[0] === url);
+    return serverToken ? Object.values(serverToken)[0] : null;
+  }
+
+  async validarJWTToken(token:string,url:string):Promise<boolean>{
+    const apiUrl = url + '/api/validarToken';
+    try {
+      const response = await fetch(apiUrl, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json; charset=utf-8',
+          'Authorization': `Bearer ${token}`,
+        }
+      });
+
+      if (!response.ok) {
+        return false;
+      }
+    } catch (e) {
+      console.error(e);
+      return false;
+    }
+    return true;
+  }
+
+  async callServerForName(urlServidor: string):Promise<string|null> {
     const apiUrl = `${urlServidor}/api/institucion`;
 
     console.log(apiUrl);
@@ -279,15 +288,13 @@ export class ModalLoginComponent implements OnInit {
         return respuesta.nombre;
       } else {
         console.log('Ha ocurrido un error:', response.status);
-        alert('Error en la búsqueda. Intente luego o consulte al administrador del sistema.');
+        return null;
+        //alert('Error en la búsqueda. Intente luego o consulte al administrador del sistema.');
       }
     } catch (error) {
       console.error('Error al realizar la solicitud:', error);
-      alert('Error en la búsqueda. Intente luego o consulte al administrador del sistema.');
+      return null;
+      //alert('Error en la búsqueda. Intente luego o consulte al administrador del sistema.');
     }
-  }
-
-  reject() {
-    this.activeModal.dismiss('Cancelar');
   }
 }
