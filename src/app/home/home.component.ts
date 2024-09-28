@@ -115,68 +115,71 @@ export class HomeComponent {
     const modalRef = this.modalService.open(ModalLoginComponent, {
       scrollable: false,
     });
+    modalRef.componentInstance.inputDisclaimer = ['Email', 'Contraseña', 'Url del servidor'];
 
-    modalRef.componentInstance.tittle = 'Iniciar sesión';
+    /*modalRef.componentInstance.tittle = 'Iniciar sesión';
     modalRef.componentInstance.inputDisclaimer[0] = 'Email';
     modalRef.componentInstance.inputDisclaimer[1] = 'Contraseña';
-    modalRef.componentInstance.inputDisclaimer[2] = 'Url del servidor';
+    modalRef.componentInstance.inputDisclaimer[2] = 'Url del servidor';*/
 
     // Control Resolve with Observable
     modalRef.closed.subscribe({
       next: async (resp) => { // Añadimos async aquí
-        const cursoJson = await this.obtenerCurso(idCurso);
-        let stringCurso = JSON.stringify(cursoJson);
-        //const cursoB64 = btoa(stringCurso); // Convertir el JSON a base64
-        const cursoB64 = btoa(unescape(encodeURIComponent(stringCurso)));
+        if (resp) { // Comprobar que la respuesta no sea null
+          const cursoJson = await this.obtenerCurso(idCurso);
+          let stringCurso = JSON.stringify(cursoJson);
+          //const cursoB64 = btoa(stringCurso); // Convertir el JSON a base64
+          const cursoB64 = btoa(unescape(encodeURIComponent(stringCurso)));
 
-        const requestBody = { base64: cursoB64 };
-        const apiUrl = `${resp.urlServidorValue}/api/subirCurso`;
+          const requestBody = { base64: cursoB64 };
+          const apiUrl = `${resp.urlServidorValue}/api/subirCurso`;
 
-        try {
-          const response = await fetch(apiUrl, {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json; charset=utf-8',
-              'Authorization': 'Bearer ' + resp.token,
-            },
-            body: JSON.stringify(requestBody),
-          });
+          try {
+            const response = await fetch(apiUrl, {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json; charset=utf-8',
+                'Authorization': 'Bearer ' + resp.token,
+              },
+              body: JSON.stringify(requestBody),
+            });
 
-          if (response.ok) {
-            // Si la solicitud fue exitosa, extraer el token de la respuesta
-            const responseData = await response.json();
-            const idCurso = responseData.idCurso;
-            const base64 = responseData.base64;
-            console.log('Curso subido exitosamente', idCurso);
-            console.log('Nuevo base64', base64);
-            // Convertir el base64 de la salida en JSON
-            const binaryString = atob(base64);
-            // Convertir la cadena binaria a una cadena UTF-8
-            const utf8String = decodeURIComponent(escape(binaryString));
-            const decodedCurso = JSON.parse(utf8String);
+            if (response.ok) {
+              // Si la solicitud fue exitosa, extraer el token de la respuesta
+              const responseData = await response.json();
+              const idCurso = responseData.idCurso;
+              const base64 = responseData.base64;
+              console.log('Curso subido exitosamente', idCurso);
+              console.log('Nuevo base64', base64);
+              // Convertir el base64 de la salida en JSON
+              const binaryString = atob(base64);
+              // Convertir la cadena binaria a una cadena UTF-8
+              const utf8String = decodeURIComponent(escape(binaryString));
+              const decodedCurso = JSON.parse(utf8String);
 
-            this.alertMessage = 'Tu curso ha sido subido exitosamente al servidor.';
-            this.showAlert = true;
-            this.scrollToTop();
-            this.modificarCurso(decodedCurso)
-            // Recargar el componente
+              this.alertMessage = 'Tu curso ha sido subido exitosamente al servidor.';
+              this.showAlert = true;
+              this.scrollToTop();
+              this.modificarCurso(decodedCurso)
+              // Recargar el componente
 
-            this.router.navigate(['/']);
-          } else {
-            // Si la solicitud no fue exitosa, mostrar un mensaje de error
-            console.log('Ha ocurrido un error:', response.status);
+              this.router.navigate(['/']);
+            } else {
+              // Si la solicitud no fue exitosa, mostrar un mensaje de error
+              console.log('Ha ocurrido un error:', response.status);
+              const responseBody = await response.json();
+              this.alertMessage = 'Error al subir el curso. El servidor dice: '+responseBody.message;
+              this.showAlert = true;
+              this.scrollToTop();
+            }
+          } catch (error) {
+            // Manejar errores de la solicitud
+            console.error('Error al realizar la solicitud:', error);
 
             this.alertMessage = 'Error al subir el curso. Intente luego o consulte al administrador del sistema.';
             this.showAlert = true;
             this.scrollToTop();
           }
-        } catch (error) {
-          // Manejar errores de la solicitud
-          console.error('Error al realizar la solicitud:', error);
-
-          this.alertMessage = 'Error al subir el curso. Intente luego o consulte al administrador del sistema.';
-          this.showAlert = true;
-          this.scrollToTop();
         }
       },
       error: () => {
@@ -186,7 +189,7 @@ export class HomeComponent {
   }
 
 
-  subirCambios(idCurso: any, event: any) {
+  /*subirCambios(idCurso: any, event: any) {
     event.stopPropagation();
     console.log(idCurso);
 
@@ -262,7 +265,7 @@ export class HomeComponent {
       },
     });
 
-  }
+  }*/
 
   cardReporte(event:any) {
     event.stopPropagation();
