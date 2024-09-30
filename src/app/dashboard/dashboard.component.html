@@ -30,7 +30,7 @@
             <i class="bi bi-cloud-arrow-down me-2"></i>EXPORTAR</button>
             <ul class="dropdown-menu">
                 <li><button class="dropdown-item" (click)="descargarCurso($event)">Exportar curso</button></li>
-                <li><button class="dropdown-item" (click)="descargarPDF($event)">Descargar cómo PDF</button></li>
+                <li><button class="dropdown-item" (click)="descargarPDF($event)">Descargar como PDF</button></li>
             </ul>
             <!-- por ahora no va el compartir -->
             <!-- <a class="btn btn-primary background-primary m-2" href="#!" role="button">
@@ -109,3 +109,54 @@
     </div>
 </div>
 <!-- ------------------ END ZONA CONTENIDO GRUPO ------------------ -->
+<!--PopUp selector PDF-->
+<ng-template #selectorPdf let-modal>
+    <div class="modal-header">
+      <h4 class="modal-title">Error</h4>
+      <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
+    </div>
+    <div class="modal-body">
+        <div *ngFor="let etapa of esquema.etapas">
+            <div>
+              <input 
+                type="checkbox" 
+                [checked]="isEtapaChecked(etapa)" 
+                (change)="onToggleEtapa(etapa, $event)">
+              {{etapa.nombre}}
+            </div>
+          
+            <div *ngFor="let grupo of etapa.grupos" style="margin-left: 20px;">
+              <div>
+                <input 
+                  type="checkbox" 
+                  [checked]="isGrupoChecked(grupo)" 
+                  (change)="onToggleGrupo(grupo, $event)">
+                {{grupo.nombre}}
+              </div>
+          
+              <div *ngFor="let atributo of grupo.atributos" style="margin-left: 40px;">
+                <div>
+                  <input 
+                    type="checkbox" 
+                    [checked]="isAtributoChecked(atributo)" 
+                    (change)="onToggleAtributo(atributo, $event)">
+                  {{atributo.nombre}}
+                </div>
+          
+                <div *ngFor="let fila of atributo.filasDatos" style="margin-left: 60px;">
+                  <div *ngFor="let dato of fila.datos">
+                    <input 
+                      type="checkbox" 
+                      [checked]="isDatoChecked(dato)" 
+                      (change)="onToggleDato(dato, $event)">
+                    {{dato.nombre}}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn btn-outline-gray" (click)="modal.dismiss()">Cerrar</button>
+    </div>
+</ng-template>

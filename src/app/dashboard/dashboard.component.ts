@@ -1,5 +1,5 @@
-import { Component, OnInit, HostListener } from '@angular/core';
-import { Etapa, Grupo,Esquema } from '../modelos/schema.model';
+import { Component, OnInit, HostListener, TemplateRef, ViewChild } from '@angular/core';
+import { Etapa, Grupo,Esquema, Atributo, Dato } from '../modelos/schema.model';
 import { SchemaSavedData, Version } from '../modelos/schemaData.model';
 import { InitialSchemaLoaderService } from '../servicios/initial-schema-loader.service';
 import { AccionesCursosService } from '../servicios/acciones-cursos.service';
@@ -28,17 +28,25 @@ export class DashboardComponent implements OnInit {
 
     savedDataCurso : SchemaSavedData = this.initialSchemaService.loadedData!;
     versionSeleccionada: Version = this.savedDataCurso.versiones.at(-1)!;
+    //POP UP Selector PDF
+    @ViewChild('selectorPdf') selectorPdf!: TemplateRef<any>;
+    checkStatus: { [key: string]: boolean } = {};
+    esquema:Esquema;
 
     constructor(public initialSchemaService : InitialSchemaLoaderService,
         private router: Router,
         private modalService: NgbModal,
         public accionesCursosService: AccionesCursosService,
         public interaccionSchemaConData: Interaccion_Schema_Data
-    ){ }
+    ){ 
+        this.esquema=this.initialSchemaService.defaultSchema!;
+    }
 
 
     ngOnInit() {
-
+        
+        this.initializeCheckStatus(this.esquema);
+        
         const palette = ["#c0392b","#2980b9","#27ae60","#708284"] //rojo, azul, verde, gris
         setTimeout(()=>{
             // tiene que estar en el timeout sino da undefined
@@ -190,14 +198,15 @@ export class DashboardComponent implements OnInit {
     }
 
     public descargarPDF(event: any):void{
-        event.stopPropagation();
+        this.modalService.open(this.selectorPdf);
+        /*event.stopPropagation();
         const exportPdf = new ExportpdfComponent(this.initialSchemaService,this.interaccionSchemaConData);
         var pdf;
         if(this.versionSeleccionada){
             //pdf = exportPdf.generatePdf(this.initialSchemaService.loadedData?.id!);
             pdf = exportPdf.newGeneratePdf(this.savedDataCurso,this.versionSeleccionada);
             pdf.open();
-        }
+        }*/
     }
 
     goHome(){
@@ -247,5 +256,90 @@ export class DashboardComponent implements OnInit {
     seleccionarVersion(version: number, e:any){
         const curso = this.initialSchemaService.loadedData;
         this.versionSeleccionada = curso?.versiones.find(v => v.version === version)!;
+    }
+
+
+
+
+    //CODIGO POPUP PDF
+    // Manejar el estado de los checkboxes
+    initializeCheckStatus(esquema: Esquema) {
+        esquema.etapas.forEach(etapa => {
+          this.checkStatus[`etapa_${etapa.id}`] = true; // Inicializa etapa como marcada
+          etapa.grupos.forEach(grupo => {
+            this.checkStatus[`grupo_${grupo.id}`] = true; // Inicializa grupo como marcado
+            grupo.atributos.forEach(atributo => {
+              this.checkStatus[`atributo_${atributo.id}`] = true; // Inicializa atributo como marcado
+              if(atributo.filasDatos!=null){
+                  atributo.filasDatos.forEach(fila => {
+                    fila.datos.forEach(dato => {
+                      this.checkStatus[`dato_${dato.id}`] = true; // Inicializa dato como marcado
+                    });
+                  });
+              }
+              else{
+                console.log("NULL");
+              }
+            });
+          });
+        });
+    }
+    // Calcula FilaDatos de Atributo
+
+    // Funciones para manejar el cambio de estado
+    onToggleEtapa(element: any, event: Event): void {
+        const inputElement = event.target as HTMLInputElement;
+        const isChecked = inputElement ? inputElement.checked : false;
+        this.toggleEtapa(element, isChecked);
+    }
+    toggleEtapa(etapa: Etapa, isChecked: boolean) {
+        this.checkStatus[`etapa_${etapa.id}`] = isChecked;
+        etapa.grupos.forEach(grupo => this.toggleGrupo(grupo, isChecked)); // Desmarca sus grupos
+    }
+    onToggleGrupo(element: any, event: Event): void {
+        const inputElement = event.target as HTMLInputElement;
+        const isChecked = inputElement ? inputElement.checked : false;
+        this.toggleGrupo(element, isChecked);
+    }
+    toggleGrupo(grupo: Grupo, isChecked: boolean) {
+    this.checkStatus[`grupo_${grupo.id}`] = isChecked;
+    grupo.atributos.forEach(atributo => this.toggleAtributo(atributo, isChecked)); // Desmarca atributos
+    }
+    onToggleAtributo(element: any, event: Event): void {
+        const inputElement = event.target as HTMLInputElement;
+        const isChecked = inputElement ? inputElement.checked : false;
+        this.toggleAtributo(element, isChecked);
+    }
+    toggleAtributo(atributo: Atributo, isChecked: boolean) {
+    this.checkStatus[`atributo_${atributo.id}`] = isChecked;
+    atributo.filasDatos.forEach(fila => {
+        fila.datos.forEach(dato => {
+        this.checkStatus[`dato_${dato.id}`] = isChecked; // Desmarca datos
+        });
+    });
+    }
+    onToggleDato(element: any, event: Event): void {
+        const inputElement = event.target as HTMLInputElement;
+        const isChecked = inputElement ? inputElement.checked : false;
+        this.toggleDato(element, isChecked);
+    }
+    toggleDato(dato: Dato, isChecked: boolean) {
+        this.checkStatus[`dato_${dato.id}`] = isChecked;
+    }
+    // Funciones para verificar el estado
+    isEtapaChecked(etapa: Etapa): boolean {
+    return this.checkStatus[`etapa_${etapa.id}`];
+    }
+
+    isGrupoChecked(grupo: Grupo): boolean {
+    return this.checkStatus[`grupo_${grupo.id}`];
+    }
+
+    isAtributoChecked(atributo: Atributo): boolean {
+    return this.checkStatus[`atributo_${atributo.id}`];
+    }
+
+    isDatoChecked(dato: Dato): boolean {
+    return this.checkStatus[`dato_${dato.id}`];
     }
 }
