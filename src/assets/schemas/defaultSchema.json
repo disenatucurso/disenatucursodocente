@@ -122,7 +122,7 @@
                                                 "idDato": null
                                             },
                                             "herencia": null,
-                                            "ayuda": " Las competencias combinan habilidades, actitudes y conocimientos que los estudiantes deben desarrollar en su proceso de aprendizaje. Se pueden formular en un enunciado que la describa en términos generales y haga referencia a algunos aspectos específicos. Ej. Resolución de problemas: seleccionar estrategias y recursos para llegar a una solución a partir de lo que se conoce. Puede incluir analizar información, ponderar alternativas y crear planes de acción.",
+                                            "ayuda": "El tema o contenido temático de un curso es el asunto, materia o cuestión que el curso trata. Se puede organizar en unidades, lecciones o capítulos. Ej. Psicología del desarrollo, Biología celular. Las competencias se refieren a las habilidades, actitudes y conocimientos que deben desarrollar durante el curso. Ej. Resolución de problemas: llegar a una solución a partir de lo que se conoce. Puede incluir analizar información, ponderar alternativas y crear planes de acción.",
                                             "tipo": "selectFijoUnico",
                                             "computo": null,
                                             "opciones": {
@@ -759,7 +759,11 @@
                             },
                             "herencia": null,
                             "multiInstanciable": false,
-                            "puntoCritico": null,
+                            "puntoCritico": {
+                                "normativa": null,
+                                "informacionAmpliatoria": null,
+                                "aporteConceptual": "El marco pedagógico de un curso es un conjunto de principios, conceptos, teorías y estrategias que orientan el proceso de enseñanza y aprendizaje en un curso específico. Funciona como una guía para los docentes, ayudándoles a planificar, desarrollar y evaluar sus clases de manera efectiva. Se compone de opciones pedagógicas, metodológicas y estrategias de enseñanza. La opción por cada uno de estos elementos depende de los objetivos del curso, de la disciplina, de los estudiantes y su perfil, entre otros elementos. En esta infografía encontrará una visión muy general de algunas metodologías y sus características. Pueden encontrar un desarrollo más extenso en este recurso creado para docentes: https://eva.udelar.edu.uy/course/view.php?id=619&section=2"
+                            },
                             "filasDatos": [{
                                 "datos": [{
                                     "id": 1,
@@ -898,7 +902,11 @@
                             },
                             "herencia": null,
                             "multiInstanciable": true,
-                            "puntoCritico": null,
+                            "puntoCritico": {
+                                "normativa": null,
+                                "informacionAmpliatoria": null,
+                                "aporteConceptual": "Los recursos educativos son los materiales creados para el objetivo de enseñar y aprender. Pueden ser materiales multimedia, publicaciones periódicas acompañadas de preguntas o actividades sobre sus contenidos, juegos, repartidos de actividades prácticas creados por el docentes, etc."
+                            },
                             "filasDatos": [{
                                 "datos": [{
                                         "id": 1,
@@ -1129,7 +1137,7 @@
                             "herencia": null,
                             "multiInstanciable": true,
                             "puntoCritico": null,
-                            "ayuda": "Si se trata de un curso con instancias presenciales, se tendrá que definir el espacio físico donde se llevarán a cabo esas instancias: aula, laboratorio, gimnasio, etc.",
+                            "ayuda": "Es la infraestructura que proprociona la instituación. Si se trata de un curso con instancias presenciales, se tendrá que definir el espacio físico donde se llevarán a cabo esas instancias: aula, laboratorio, gimnasio, etc.",
                             "filasDatos": [{
                                 "datos": [{
                                         "id": 1,
@@ -1612,6 +1620,214 @@
                             }]
                         },
                         {
+                          "id": 3,
+                          "nombre": "Orquestación",
+                          "ubicacion": {
+                              "idEtapa": 2,
+                              "idGrupo": 24,
+                              "idAtributo": null,
+                              "idDato": null
+                          },
+                          "herencia": null,
+                          "multiInstanciable": true,
+                          "puntoCritico": {
+                              "aporteConceptual": "Pensar en la estructura del curso implica pensar en cómo se va a 'orquestar' con conjunto de componentes del curso, una vez comienza a dictarse. Se entiende 'orquestar' en el sentido de organizar y ordenar de antemano. Implica proponer una o más trayectorias posibles o ideales para llevar adelante el curso. Se concreta en una distribución de los contenidos, las actividades y las diferentes instancias educativas y entornos físicos y digitales. Se debe asignar espacios y tiempos al contenido desagregado. El tiempo puede ser estimado en horas, y calendarizado. Recordar que cada contenido previamente definido tiene actividades asociadas, instancias de evaluación, etc. El componente visual es muy importante para entender la secuencia de temas, actividades, evaluaciones, etc. por parte del estudiante.",
+                              "informacionAmpliatoria": "La estructura ordena y organiza el curso para estudiantes y alumnos. Al momento de concebir la estructura, es importante armonizar los diversos entornos en los cuales el curso tendrá lugar: virtuales, presenciales, sincrónicos y asincrónicos, evitando la fragmentación y procurando que se perciba la interconexión entre actividades y entornos Es necesario que se perciba la unidad de la propuesta. Se debe ponderar la distribución de contenidos en función de los tiempos, considerar el ritmo de desarrollo del curso de forma integrada con las actividades y planificar la forma de evaluar en relación con la temporalidad del curso: ciclos, períodos, duración, etc. Estimar los tiempos que lleva completar cada secuencia didáctica y ajustar lo necesario para tener una propuesta realista y asequible para estudiantes y docentes. Para saber más sobre la importancia de la estructura del curso y sus posibilidades, ver Bates, 2012: https://pressbooks.pub/cead/chapter/11-9-paso-7-disenar-la-estructura-del-curso-y-las-actividades-de-aprendizaje/",
+                              "normativa": null
+                          },
+                          "filasDatos": [{
+                                  "datos": [{
+                                      "id": 1,
+                                      "nombre": "Nombre de modulo",
+                                      "ubicacion": {
+                                          "idEtapa": 2,
+                                          "idGrupo": 24,
+                                          "idAtributo": 3,
+                                          "idDato": null
+                                      },
+                                      "herencia": null,
+                                      "ayuda": null,
+                                      "tipo": "text",
+                                      "computo": null,
+                                      "opciones": null,
+                                      "habilitadoSi": null,
+                                      "multiInstanciable": false,
+                                      "idContenidoCondicional": null,
+                                      "tamanio": 50,
+                                      "filasDatos": null
+                                  }]
+                              },
+                              {
+                                  "datos": [{
+                                          "id": 2,
+                                          "nombre": "Fecha inicio",
+                                          "ubicacion": {
+                                              "idEtapa": 2,
+                                              "idGrupo": 24,
+                                              "idAtributo": 3,
+                                              "idDato": null
+                                          },
+                                          "herencia": null,
+                                          "ayuda": null,
+                                          "tipo": "date",
+                                          "computo": null,
+                                          "opciones": null,
+                                          "habilitadoSi": null,
+                                          "multiInstanciable": false,
+                                          "idContenidoCondicional": null,
+                                          "tamanio": null,
+                                          "filasDatos": null
+                                      },
+                                      {
+                                          "id": 3,
+                                          "nombre": "Fecha fin",
+                                          "ubicacion": {
+                                              "idEtapa": 2,
+                                              "idGrupo": 24,
+                                              "idAtributo": 3,
+                                              "idDato": null
+                                          },
+                                          "herencia": null,
+                                          "ayuda": null,
+                                          "tipo": "date",
+                                          "computo": null,
+                                          "opciones": null,
+                                          "habilitadoSi": null,
+                                          "multiInstanciable": false,
+                                          "idContenidoCondicional": null,
+                                          "tamanio": null,
+                                          "filasDatos": null
+                                      },
+                                      {
+                                          "id": 4,
+                                          "nombre": "Modalidad",
+                                          "ubicacion": {
+                                              "idEtapa": 2,
+                                              "idGrupo": 24,
+                                              "idAtributo": 3,
+                                              "idDato": null
+                                          },
+                                          "herencia": null,
+                                          "ayuda": null,
+                                          "tipo": "selectFijoUnico",
+                                          "computo": null,
+                                          "opciones": {
+                                              "referencia": null,
+                                              "idGrupoDatoFijo": 9
+                                          },
+                                          "habilitadoSi": null,
+                                          "multiInstanciable": false,
+                                          "idContenidoCondicional": null,
+                                          "tamanio": null,
+                                          "filasDatos": null
+                                      }
+                                  ]
+                              },
+                              {
+                                  "datos": [{
+                                          "id": 5,
+                                          "nombre": "Espacios físicos utilizados",
+                                          "ubicacion": {
+                                              "idEtapa": 2,
+                                              "idGrupo": 24,
+                                              "idAtributo": 3,
+                                              "idDato": null
+                                          },
+                                          "herencia": null,
+                                          "ayuda": null,
+                                          "tipo": "selectUsuarioMultiple",
+                                          "computo": null,
+                                          "opciones": {
+                                              "referencia": {
+                                                  "idEtapa": 2,
+                                                  "idGrupo": 22,
+                                                  "idAtributo": 1,
+                                                  "idDato": [
+                                                      1
+                                                  ]
+                                              },
+                                              "idGrupoDatoFijo": null
+                                          },
+                                          "habilitadoSi": null,
+                                          "multiInstanciable": false,
+                                          "idContenidoCondicional": null,
+                                          "tamanio": null,
+                                          "filasDatos": null
+                                      },
+                                      {
+                                          "id": 6,
+                                          "nombre": "Plataformas disponibles",
+                                          "ubicacion": {
+                                              "idEtapa": 2,
+                                              "idGrupo": 24,
+                                              "idAtributo": 3,
+                                              "idDato": null
+                                          },
+                                          "herencia": null,
+                                          "ayuda": null,
+                                          "tipo": "selectFijoMultiple",
+                                          "computo": null,
+                                          "opciones": {
+                                              "referencia": null,
+                                              "idGrupoDatoFijo": 13
+                                          },
+                                          "habilitadoSi": null,
+                                          "multiInstanciable": false,
+                                          "idContenidoCondicional": null,
+                                          "tamanio": null,
+                                          "filasDatos": null
+                                      }
+                                  ]
+                              },
+                              {
+                                  "datos": [{
+                                      "id": 7,
+                                      "nombre": "Unidades",
+                                      "ubicacion": {
+                                          "idEtapa": 2,
+                                          "idGrupo": 24,
+                                          "idAtributo": 3,
+                                          "idDato": null
+                                      },
+                                      "herencia": null,
+                                      "ayuda": null,
+                                      "tipo": null,
+                                      "computo": null,
+                                      "opciones": null,
+                                      "habilitadoSi": null,
+                                      "multiInstanciable": true,
+                                      "idContenidoCondicional": null,
+                                      "tamanio": null,
+                                      "filasDatos": [{
+                                          "datos": [{
+                                              "id": 1,
+                                              "nombre": null,
+                                              "ubicacion": {
+                                                  "idEtapa": 2,
+                                                  "idGrupo": 24,
+                                                  "idAtributo": 3,
+                                                  "idDato": [7]
+                                              },
+                                              "herencia": null,
+                                              "ayuda": null,
+                                              "tipo": "selectFijoUnico",
+                                              "computo": null,
+                                              "opciones": {
+                                                  "referencia": null,
+                                                  "idGrupoDatoFijo": 16
+                                              },
+                                              "habilitadoSi": null,
+                                              "multiInstanciable": false,
+                                              "idContenidoCondicional": [1, 2, 3],
+                                              "tamanio": null,
+                                              "filasDatos": null
+                                          }]
+                                      }]
+                                  }]
+                              }
+                          ]
+                        },
+                        {
                             "id": 2,
                             "nombre": "Evaluaciones",
                             "ubicacion": {
@@ -1716,214 +1932,6 @@
                                     }
                                 ]
                             }]
-                        },
-                        {
-                            "id": 3,
-                            "nombre": "Orquestación",
-                            "ubicacion": {
-                                "idEtapa": 2,
-                                "idGrupo": 24,
-                                "idAtributo": null,
-                                "idDato": null
-                            },
-                            "herencia": null,
-                            "multiInstanciable": true,
-                            "puntoCritico": {
-                                "aporteConceptual": "Pensar en la estructura del curso implica pensar en cómo se va a 'orquestar' con conjunto de componentes del curso, una vez comienza a dictarse. Se entiende 'orquestar' en el sentido de organizar y ordenar de antemano. Implica proponer una o más trayectorias posibles o ideales para llevar adelante el curso. Se concreta en una distribución de los contenidos, las actividades y las diferentes instancias educativas y entornos físicos y digitales. Se debe asignar espacios y tiempos al contenido desagregado. El tiempo puede ser estimado en horas, y calendarizado. Recordar que cada contenido previamente definido tiene actividades asociadas, instancias de evaluación, etc. El componente visual es muy importante para entender la secuencia de temas, actividades, evaluaciones, etc. por parte del estudiante.",
-                                "informacionAmpliatoria": "La estructura ordena y organiza el curso para estudiantes y alumnos. Al momento de concebir la estructura, es importante armonizar los diversos entornos en los cuales el curso tendrá lugar: virtuales, presenciales, sincrónicos y asincrónicos, evitando la fragmentación y procurando que se perciba la interconexión entre actividades y entornos Es necesario que se perciba la unidad de la propuesta. Se debe ponderar la distribución de contenidos en función de los tiempos, considerar el ritmo de desarrollo del curso de forma integrada con las actividades y planificar la forma de evaluar en relación con la temporalidad del curso: ciclos, períodos, duración, etc. Estimar los tiempos que lleva completar cada secuencia didáctica y ajustar lo necesario para tener una propuesta realista y asequible para estudiantes y docentes. Para saber más sobre la importancia de la estructura del curso y sus posibilidades, ver Bates, 2012: https://pressbooks.pub/cead/chapter/11-9-paso-7-disenar-la-estructura-del-curso-y-las-actividades-de-aprendizaje/",
-                                "normativa": null
-                            },
-                            "filasDatos": [{
-                                    "datos": [{
-                                        "id": 1,
-                                        "nombre": "Nombre de modulo",
-                                        "ubicacion": {
-                                            "idEtapa": 2,
-                                            "idGrupo": 24,
-                                            "idAtributo": 3,
-                                            "idDato": null
-                                        },
-                                        "herencia": null,
-                                        "ayuda": null,
-                                        "tipo": "text",
-                                        "computo": null,
-                                        "opciones": null,
-                                        "habilitadoSi": null,
-                                        "multiInstanciable": false,
-                                        "idContenidoCondicional": null,
-                                        "tamanio": 50,
-                                        "filasDatos": null
-                                    }]
-                                },
-                                {
-                                    "datos": [{
-                                            "id": 2,
-                                            "nombre": "Fecha inicio",
-                                            "ubicacion": {
-                                                "idEtapa": 2,
-                                                "idGrupo": 24,
-                                                "idAtributo": 3,
-                                                "idDato": null
-                                            },
-                                            "herencia": null,
-                                            "ayuda": null,
-                                            "tipo": "date",
-                                            "computo": null,
-                                            "opciones": null,
-                                            "habilitadoSi": null,
-                                            "multiInstanciable": false,
-                                            "idContenidoCondicional": null,
-                                            "tamanio": null,
-                                            "filasDatos": null
-                                        },
-                                        {
-                                            "id": 3,
-                                            "nombre": "Fecha fin",
-                                            "ubicacion": {
-                                                "idEtapa": 2,
-                                                "idGrupo": 24,
-                                                "idAtributo": 3,
-                                                "idDato": null
-                                            },
-                                            "herencia": null,
-                                            "ayuda": null,
-                                            "tipo": "date",
-                                            "computo": null,
-                                            "opciones": null,
-                                            "habilitadoSi": null,
-                                            "multiInstanciable": false,
-                                            "idContenidoCondicional": null,
-                                            "tamanio": null,
-                                            "filasDatos": null
-                                        },
-                                        {
-                                            "id": 4,
-                                            "nombre": "Modalidad",
-                                            "ubicacion": {
-                                                "idEtapa": 2,
-                                                "idGrupo": 24,
-                                                "idAtributo": 3,
-                                                "idDato": null
-                                            },
-                                            "herencia": null,
-                                            "ayuda": null,
-                                            "tipo": "selectFijoUnico",
-                                            "computo": null,
-                                            "opciones": {
-                                                "referencia": null,
-                                                "idGrupoDatoFijo": 9
-                                            },
-                                            "habilitadoSi": null,
-                                            "multiInstanciable": false,
-                                            "idContenidoCondicional": null,
-                                            "tamanio": null,
-                                            "filasDatos": null
-                                        }
-                                    ]
-                                },
-                                {
-                                    "datos": [{
-                                            "id": 5,
-                                            "nombre": "Espacios físicos utilizados",
-                                            "ubicacion": {
-                                                "idEtapa": 2,
-                                                "idGrupo": 24,
-                                                "idAtributo": 3,
-                                                "idDato": null
-                                            },
-                                            "herencia": null,
-                                            "ayuda": null,
-                                            "tipo": "selectUsuarioMultiple",
-                                            "computo": null,
-                                            "opciones": {
-                                                "referencia": {
-                                                    "idEtapa": 2,
-                                                    "idGrupo": 22,
-                                                    "idAtributo": 1,
-                                                    "idDato": [
-                                                        1
-                                                    ]
-                                                },
-                                                "idGrupoDatoFijo": null
-                                            },
-                                            "habilitadoSi": null,
-                                            "multiInstanciable": false,
-                                            "idContenidoCondicional": null,
-                                            "tamanio": null,
-                                            "filasDatos": null
-                                        },
-                                        {
-                                            "id": 6,
-                                            "nombre": "Plataformas disponibles",
-                                            "ubicacion": {
-                                                "idEtapa": 2,
-                                                "idGrupo": 24,
-                                                "idAtributo": 3,
-                                                "idDato": null
-                                            },
-                                            "herencia": null,
-                                            "ayuda": null,
-                                            "tipo": "selectFijoMultiple",
-                                            "computo": null,
-                                            "opciones": {
-                                                "referencia": null,
-                                                "idGrupoDatoFijo": 13
-                                            },
-                                            "habilitadoSi": null,
-                                            "multiInstanciable": false,
-                                            "idContenidoCondicional": null,
-                                            "tamanio": null,
-                                            "filasDatos": null
-                                        }
-                                    ]
-                                },
-                                {
-                                    "datos": [{
-                                        "id": 7,
-                                        "nombre": "Unidades",
-                                        "ubicacion": {
-                                            "idEtapa": 2,
-                                            "idGrupo": 24,
-                                            "idAtributo": 3,
-                                            "idDato": null
-                                        },
-                                        "herencia": null,
-                                        "ayuda": null,
-                                        "tipo": null,
-                                        "computo": null,
-                                        "opciones": null,
-                                        "habilitadoSi": null,
-                                        "multiInstanciable": true,
-                                        "idContenidoCondicional": null,
-                                        "tamanio": null,
-                                        "filasDatos": [{
-                                            "datos": [{
-                                                "id": 1,
-                                                "nombre": null,
-                                                "ubicacion": {
-                                                    "idEtapa": 2,
-                                                    "idGrupo": 24,
-                                                    "idAtributo": 3,
-                                                    "idDato": [7]
-                                                },
-                                                "herencia": null,
-                                                "ayuda": null,
-                                                "tipo": "selectFijoUnico",
-                                                "computo": null,
-                                                "opciones": {
-                                                    "referencia": null,
-                                                    "idGrupoDatoFijo": 16
-                                                },
-                                                "habilitadoSi": null,
-                                                "multiInstanciable": false,
-                                                "idContenidoCondicional": [1, 2, 3],
-                                                "tamanio": null,
-                                                "filasDatos": null
-                                            }]
-                                        }]
-                                    }]
-                                }
-                            ]
                         }
                     ]
                 },
@@ -1951,7 +1959,7 @@
                             "herencia": null,
                             "multiInstanciable": false,
                             "puntoCritico": {
-                                "aporteConceptual": "Los métodos se refieren al “cómo” enseñar. Tienen abordajes diferentes según los marcos pedagógicos y las teorías de aprendizaje que los fundamentan y según cómo se aborda el objeto de aprendizaje. Existen métodos más centrados en el docente y métodos más centrados en el estudiante. Existen métodos muy estructurados y otros más flexibles. Definir la metodología implica Seleccionar entre métodos conocidos, proponer actividades, seleccionar técnicas y priorizar tipos de evaluación. Algunos ejemplos son: aprendizaje colaborativos, aula invertida, aprendizaje por proyectos, aprendizaje basado en problemas, gamificación, etc.",
+                                "aporteConceptual": "Los métodos se refieren al “cómo” enseñar. Tienen abordajes diferentes según los marcos pedagógicos y las teorías de aprendizaje que los fundamentan y según cómo se aborda el objeto de aprendizaje. Existen métodos más centrados en el docente y métodos más centrados en el estudiante. Existen métodos muy estructurados y otros más flexibles. Definir la metodología implica Seleccionar entre métodos conocidos, proponer actividades, seleccionar técnicas y priorizar tipos de evaluación. Algunos ejemplos son: aprendizaje colaborativos, aula invertida, aprendizaje por proyectos, aprendizaje basado en problemas, gamificación, etc. En este libro digital podrás leer cómo se desarrollaron diversas metodologías cronológicamente: https://eva.udelar.edu.uy/pluginfile.php/112721/mod_resource/content/3/Metodolog%C3%ADas%20para%20el%20redise%C3%B1o%20de%20la%20ense%C3%B1anza%20en%20ambientes%20digitales.pdf",
                                 "informacionAmpliatoria": "Existen mucha producción bibliográfica sobre metodologías de enseñanza. La inclusión de tecnologías digitales ha ampliado las posibilidades y ha promovido el surgimiento de otras metodologías. Puede acceder a más información sobre las metodologías de enseñanza en este trabajo de Porta y Rodés, 2020: https://eva.udelar.edu.uy/mod/book/view.php?id=24527",
                                 "normativa": null
                             },
