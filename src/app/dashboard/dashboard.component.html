@@ -1,4 +1,4 @@
-<!-- cabezal -->
+<!-- CABEZAL -->
 <header *ngIf="this.initialSchemaService.loadedData" class="container d-flex flex-row border-bottom justify-content-between">
     <div class="d-flex flex-row align-items-center">
         <i class="bi bi-mortarboard-fill p-2" style="font-size: 1.8rem;"></i>
@@ -12,7 +12,7 @@
     </div>
 </header>
 
-<!-- zona del grafo -->
+<!-- ZONA GRAFO -->
 <div class="chart-container" style="max-width: 1000px; margin: auto; left:40px;">
     <div id="triangle" class="triangle">
         <div class="triangle-container">
@@ -22,8 +22,8 @@
     </div>
 </div>
 
+<!-- BOTON EXPORTAR -->
 <div *ngIf="this.initialSchemaService.loadedData">
-    <!-- botones -->
     <div class="container text-center mb-3">
         <div>
             <button class="btn btn-primary background-primary m-2 btn-outline-expand dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -49,7 +49,7 @@
     </div>
 </div>
 
-<!-- -------------------- ZONA VERSIONES -------------------- -->
+<!--  BOTON VERSIONADO -->
 <div class="'container p-4" *ngIf="this.mostrarUIVersiones">
     <div class="card container p-4 mb-4">
         <h3 class="mb-4">Administrar Versiones</h3>
@@ -109,7 +109,8 @@
     </div>
 </div>
 <!-- ------------------ END ZONA CONTENIDO GRUPO ------------------ -->
-<!--PopUp selector PDF-->
+
+<!-- POPUP SELECTOR PDF -->
 <ng-template #selectorPdf let-modal>
     <div class="modal-header">
       <h4 class="modal-title">Error</h4>
@@ -134,7 +135,7 @@
                 {{grupo.nombre}}
               </div>
           
-              <div *ngFor="let atributo of grupo.atributos" style="margin-left: 40px;">
+              <div *ngFor="let atributo of calculoAtributosDeGrupo(grupo.atributos)" style="margin-left: 40px;">
                 <div>
                   <input 
                     type="checkbox" 
@@ -154,7 +155,7 @@
                 </div>
               </div>
             </div>
-          </div>
+        </div>
     </div>
     <div class="modal-footer">
       <button type="button" class="btn btn-outline-gray" (click)="modal.dismiss()">Cerrar</button>

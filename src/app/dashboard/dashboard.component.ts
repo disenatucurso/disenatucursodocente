@@ -264,21 +264,44 @@ export class DashboardComponent implements OnInit {
     //CODIGO POPUP PDF
     // Manejar el estado de los checkboxes
     initializeCheckStatus(esquema: Esquema) {
+        //For Etapa
         esquema.etapas.forEach(etapa => {
-          this.checkStatus[`etapa_${etapa.id}`] = true; // Inicializa etapa como marcada
+          this.checkStatus[`E_${etapa.id}`] = true; // Inicializa etapa como marcada
+          //For Grupo
           etapa.grupos.forEach(grupo => {
-            this.checkStatus[`grupo_${grupo.id}`] = true; // Inicializa grupo como marcado
+            this.checkStatus[`E_${etapa.id}-G_${grupo.id}`] = true; // Inicializa grupo como marcado
+            //For Atributo
             grupo.atributos.forEach(atributo => {
-              this.checkStatus[`atributo_${atributo.id}`] = true; // Inicializa atributo como marcado
+              this.checkStatus[`E_${etapa.id}-G_${grupo.id}-A_${atributo.id}`] = true; // Inicializa atributo como marcado
+              let atributoCalculado:Atributo|null=null;
+              //Cargo Datos de Herencia
+              if (atributo.herencia){
+                const [atributoHerencia, grupoHerencia, etapaHerencia] = this.interaccionSchemaConData.getAtributoHerencia(atributo.herencia,{idEtapa:atributo.ubicacion.idEtapa,idGrupo:atributo.ubicacion.idGrupo,idAtributo:atributo.id,idDato:null});
+                if(atributoHerencia!.filasDatos!=null){
+                    atributoHerencia!.filasDatos.forEach(fila => {
+                      //For Dato del Atributo Heredado
+                      fila.datos.forEach(dato => {
+                        this.checkStatus[`E_${etapa.id}-G_${grupo.id}-A_${atributo.id}-D_${dato.id}`] = true; // Inicializa dato como marcado
+                      });
+                    });
+                }
+                atributoCalculado=atributoHerencia;
+              }
+              
+              //For FilaDatos del Atributo Local (no Heredado)
               if(atributo.filasDatos!=null){
                   atributo.filasDatos.forEach(fila => {
+                    //For Dato del Atributo Local
                     fila.datos.forEach(dato => {
-                      this.checkStatus[`dato_${dato.id}`] = true; // Inicializa dato como marcado
+                      this.checkStatus[`E_${etapa.id}-G_${grupo.id}-A_${atributo.id}-D_${dato.id}`] = true; // Inicializa dato como marcado
                     });
                   });
-              }
-              else{
-                console.log("NULL");
+                  if(atributoCalculado!=null){
+                    atributoCalculado.filasDatos.push(...atributo.filasDatos);
+                  }
+                  else{
+                    atributoCalculado=atributo;
+                  }
               }
             });
           });
@@ -293,7 +316,7 @@ export class DashboardComponent implements OnInit {
         this.toggleEtapa(element, isChecked);
     }
     toggleEtapa(etapa: Etapa, isChecked: boolean) {
-        this.checkStatus[`etapa_${etapa.id}`] = isChecked;
+        this.checkStatus[`E_${etapa.id}`] = isChecked;
         etapa.grupos.forEach(grupo => this.toggleGrupo(grupo, isChecked)); // Desmarca sus grupos
     }
     onToggleGrupo(element: any, event: Event): void {
@@ -302,8 +325,8 @@ export class DashboardComponent implements OnInit {
         this.toggleGrupo(element, isChecked);
     }
     toggleGrupo(grupo: Grupo, isChecked: boolean) {
-    this.checkStatus[`grupo_${grupo.id}`] = isChecked;
-    grupo.atributos.forEach(atributo => this.toggleAtributo(atributo, isChecked)); // Desmarca atributos
+        this.checkStatus[`E_${grupo.ubicacion.idEtapa}-G_${grupo.id}`] = isChecked;
+        grupo.atributos.forEach(atributo => this.toggleAtributo(atributo, isChecked)); // Desmarca atributos
     }
     onToggleAtributo(element: any, event: Event): void {
         const inputElement = event.target as HTMLInputElement;
@@ -311,12 +334,12 @@ export class DashboardComponent implements OnInit {
         this.toggleAtributo(element, isChecked);
     }
     toggleAtributo(atributo: Atributo, isChecked: boolean) {
-    this.checkStatus[`atributo_${atributo.id}`] = isChecked;
-    atributo.filasDatos.forEach(fila => {
-        fila.datos.forEach(dato => {
-        this.checkStatus[`dato_${dato.id}`] = isChecked; // Desmarca datos
+        this.checkStatus[`E_${atributo.ubicacion.idEtapa}-G_${atributo.ubicacion.idGrupo}-A_${atributo.id}`] = isChecked;
+        atributo.filasDatos.forEach(fila => {
+            fila.datos.forEach(dato => {
+                this.checkStatus[`E_${dato.ubicacion.idEtapa}-G_${dato.ubicacion.idGrupo}-A_${atributo.id}-D_${dato.id}`] = isChecked; // Desmarca datos
+            });
         });
-    });
     }
     onToggleDato(element: any, event: Event): void {
         const inputElement = event.target as HTMLInputElement;
@@ -324,22 +347,47 @@ export class DashboardComponent implements OnInit {
         this.toggleDato(element, isChecked);
     }
     toggleDato(dato: Dato, isChecked: boolean) {
-        this.checkStatus[`dato_${dato.id}`] = isChecked;
+        this.checkStatus[`E_${dato.ubicacion.idEtapa}-G_${dato.ubicacion.idGrupo}-A_${dato.ubicacion.idAtributo}-D_${dato.id}`] = isChecked;
     }
     // Funciones para verificar el estado
     isEtapaChecked(etapa: Etapa): boolean {
-    return this.checkStatus[`etapa_${etapa.id}`];
+        return this.checkStatus[`E_${etapa.id}`];
     }
 
     isGrupoChecked(grupo: Grupo): boolean {
-    return this.checkStatus[`grupo_${grupo.id}`];
+        return this.checkStatus[`E_${grupo.ubicacion.idEtapa}-G_${grupo.id}`];
     }
 
     isAtributoChecked(atributo: Atributo): boolean {
-    return this.checkStatus[`atributo_${atributo.id}`];
+        return this.checkStatus[`E_${atributo.ubicacion.idEtapa}-G_${atributo.ubicacion.idGrupo}-A_${atributo.id}`];
     }
 
     isDatoChecked(dato: Dato): boolean {
-    return this.checkStatus[`dato_${dato.id}`];
+        return this.checkStatus[`E_${dato.ubicacion.idEtapa}-G_${dato.ubicacion.idGrupo}-A_${dato.ubicacion.idAtributo}-D_${dato.id}`];
+    }
+    calculoAtributosDeGrupo(atributosGrupo:Atributo[]):Atributo[]{
+        let atributosCalculados:Atributo[]=[];
+        
+        for(let atributo of atributosGrupo){
+
+            let atributoCalculado:Atributo|null=null;
+            //Cargo FilaDatos del Atributo Herencia
+            if (atributo.herencia){
+                const [atributoHerencia, grupoHerencia, etapaHerencia] = this.interaccionSchemaConData.getAtributoHerencia(atributo.herencia,{idEtapa:atributo.ubicacion.idEtapa,idGrupo:atributo.ubicacion.idGrupo,idAtributo:atributo.id,idDato:null});
+                atributoCalculado=atributoHerencia;
+            }
+            
+            //Cargo FilaDatos del Atributo Local (no Heredado)
+            if(atributo.filasDatos!=null){
+                if(atributoCalculado!=null){
+                    atributoCalculado.filasDatos.push(...atributo.filasDatos);
+                }
+                else{
+                    atributoCalculado=atributo;
+                }
+            }
+            atributosCalculados.push(atributoCalculado!);
+        }
+        return atributosCalculados;
     }
 }

@@ -485,6 +485,7 @@
                         </div>
                     </ng-container>
                 </div>
+                <!-- BOTON ELIMINAR INSTANCIA PARA MULTI-INSTANCIABLE -->
                 <div *ngIf="atributo.multiInstanciable" class="col-auto align-self-center">
                     <button type="button" class="btn btn-outline-primary background-primary" style="padding-top:3px;padding-bottom:3px;"
                         (click)="modalConfirmacion(atributo.ubicacion,atributo.id,indiceInstancia)"
@@ -496,6 +497,7 @@
         </div>
     </div>
 </div>
+<!-- BOTON AGREGAR INSTANCIA PARA MULTI-INSTANCIABLE -->
 <div *ngIf="atributo.multiInstanciable">
     <button type="button" class="btn btn-outline-primary background-primary m-2 w-100" (click)="agregarInstanciaAtributo(atributo.ubicacion,atributo.id)" style="font-weight:500;">
         <i _ngcontent-ofn-c89="" class="bi bi-plus-square-dotted me-2"></i>
