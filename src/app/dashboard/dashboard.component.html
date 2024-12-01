@@ -113,51 +113,90 @@
 <!-- POPUP SELECTOR PDF -->
 <ng-template #selectorPdf let-modal>
     <div class="modal-header">
-      <h4 class="modal-title">Error</h4>
+      <h4 class="modal-title">Seleccione contenido del PDF</h4>
       <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
     </div>
     <div class="modal-body">
         <div *ngFor="let etapa of esquema.etapas">
             <div>
-              <input 
-                type="checkbox" 
-                [checked]="isEtapaChecked(etapa)" 
-                (change)="onToggleEtapa(etapa, $event)">
-              {{etapa.nombre}}
+                <!-- Botón para expandir/colapsar etapa -->
+                <button (click)="toggleExpandEtapa(etapa)" 
+                    class="btn btn-primary" 
+                    style="height: 1.4em; width: 1.4em; padding: 0; margin-right: 8px;"
+                    title="Expandir/Colapsar"
+                >
+                    {{isEtapaExpanded(etapa) ? '-' : '+'}}
+                </button>
+                
+                <!-- Checkbox para la etapa -->
+                <input 
+                    type="checkbox" 
+                    [checked]="isEtapaChecked(etapa)" 
+                    (change)="onToggleEtapa(etapa, $event)"
+                    title="Imprimir/No Imprimir">
+                    {{etapa.nombre}}
             </div>
           
-            <div *ngFor="let grupo of etapa.grupos" style="margin-left: 20px;">
-              <div>
-                <input 
-                  type="checkbox" 
-                  [checked]="isGrupoChecked(grupo)" 
-                  (change)="onToggleGrupo(grupo, $event)">
-                {{grupo.nombre}}
-              </div>
-          
-              <div *ngFor="let atributo of calculoAtributosDeGrupo(grupo.atributos)" style="margin-left: 40px;">
-                <div>
-                  <input 
-                    type="checkbox" 
-                    [checked]="isAtributoChecked(atributo)" 
-                    (change)="onToggleAtributo(atributo, $event)">
-                  {{atributo.nombre}}
-                </div>
-          
-                <div *ngFor="let fila of atributo.filasDatos" style="margin-left: 60px;">
-                  <div *ngFor="let dato of fila.datos">
+            <div *ngIf="isEtapaExpanded(etapa)">
+                <div *ngFor="let grupo of etapa.grupos" style="margin-left: 40px;">
+                  <div>
+                    <!-- Botón para expandir/colapsar grupo -->
+                    <button (click)="toggleExpandGrupo(grupo)" 
+                        class="btn btn-primary" 
+                        style="height: 1.4em; width: 1.4em; padding: 0; margin-right: 8px;"
+                        title="Expandir/Colapsar"
+                    >
+                        {{isGrupoExpanded(grupo) ? '-' : '+'}}
+                    </button>
+                    <!-- Checkbox para la grupo -->
                     <input 
                       type="checkbox" 
-                      [checked]="isDatoChecked(dato)" 
-                      (change)="onToggleDato(dato, $event)">
-                    {{dato.nombre}}
+                      [checked]="isGrupoChecked(grupo)" 
+                      (change)="onToggleGrupo(grupo, $event)"
+                      title="Imprimir/No Imprimir">
+                        {{grupo.nombre}}
+                  </div>
+                  
+                  <div *ngIf="isGrupoExpanded(grupo)">
+                      <div *ngFor="let atributo of calculoAtributosDeGrupo(grupo.atributos)" style="margin-left: 40px;">
+                        <div>
+                            <!-- Botón para expandir/colapsar Atributo -->
+                            <button (click)="toggleExpandAtributo(atributo)" 
+                                class="btn btn-primary" 
+                                style="height: 1.4em; width: 1.4em; padding: 0; margin-right: 8px;"
+                                title="Expandir/Colapsar"
+                            >
+                                {{isAtributoExpanded(atributo) ? '-' : '+'}}
+                            </button>
+                            <!-- Checkbox para la Atributo -->
+                            <input 
+                                type="checkbox" 
+                                [checked]="isAtributoChecked(atributo)" 
+                                (change)="onToggleAtributo(atributo, $event)"
+                                title="Imprimir/No Imprimir">
+                                {{ atributo.nombre ? atributo.nombre : '(Atributo sin nombre)' }}
+                        </div>
+                        
+                        <div *ngIf="isAtributoExpanded(atributo)">
+                            <div *ngFor="let fila of atributo.filasDatos" style="margin-left: 60px;">
+                              <div *ngFor="let dato of fila.datos">
+                                <input 
+                                  type="checkbox" 
+                                  [checked]="isDatoChecked(dato)" 
+                                  (change)="onToggleDato(dato, $event)"
+                                  title="Imprimir/No Imprimir">
+                                  {{ dato.nombre ? dato.nombre : '(Dato sin nombre)' }}
+                              </div>
+                            </div>
+                        </div>
+                      </div>
                   </div>
                 </div>
-              </div>
             </div>
         </div>
     </div>
     <div class="modal-footer">
-      <button type="button" class="btn btn-outline-gray" (click)="modal.dismiss()">Cerrar</button>
+        <button type="button" class="btn btn-outline-gray" (click)="modal.dismiss('dismiss')">Cerrar</button>
+        <button type="button" class="btn btn-primary" (click)="modal.close('close')">Generar PDF</button>
     </div>
 </ng-template>

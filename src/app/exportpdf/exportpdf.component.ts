@@ -79,57 +79,61 @@ export class ExportpdfComponent{
         };
     }
 
-    newGeneratePdf(savedDataCruso:SchemaSavedData,versionSeleccionada:Version){
+    newGeneratePdf(savedDataCruso:SchemaSavedData,versionSeleccionada:Version,checkStatus: { [key: string]: boolean }){
         this.pdf.content.push({text: savedDataCruso.nombreCurso,style: 'header' });
         this.pdf.content.push({text: "Autor: " + versionSeleccionada.autor,style: 'body' });
-        /*if (savedDataCruso.institucion){
-            this.pdf.content.push({text: "Institución: " + savedDataCruso.institucion,style: 'body' });
-        }*/
         this.pdf.content.push({text: '\n',style: 'body' });
         let schema : Esquema = this.initialSchemaService.defaultSchema!;
         for(let etapa of schema.etapas){
-            
-            this.pdf.content.push({text: '__________________________________________________________________________________', style: 'body'});
-            this.pdf.content.push({text: etapa.nombre, style: 'subheader',margin: [ 0, 15, 0, 5 ] });
-
-            for(let grupo of etapa.grupos){
-                
-                this.pdf.content.push({text: grupo.nombre, style: 'subsubheader',margin: [ 0, 10, 0, 5 ] });
-                
-                for(let atributo of grupo.atributos){
-                    //Obtengo InformacionGuardada de Atributo
-                    let stringUbicacionAtrib = JSON.stringify(this.interaccionSchemaConData.ubicacionAbsolutaDeAtributo(atributo.ubicacion,atributo.id));
-                    let datoGuardado : InformacionGuardada | null = null;
-                    for(let infoGuardada of versionSeleccionada.datosGuardados!){
-                        if (JSON.stringify(infoGuardada.ubicacionAtributo) === stringUbicacionAtrib){
-                            datoGuardado = infoGuardada;
-                            break;
+            //Seleccionó Etapa?
+            if(checkStatus[`E_${etapa.id}`]){
+              this.pdf.content.push({text: '__________________________________________________________________________________', style: 'body'});
+              this.pdf.content.push({text: etapa.nombre, style: 'subheader',margin: [ 0, 15, 0, 5 ] });
+  
+              for(let grupo of etapa.grupos){
+                  //Seleccionó Grupo?
+                  if(checkStatus[`E_${etapa.id}-G_${grupo.id}`]){
+                    this.pdf.content.push({text: grupo.nombre, style: 'subsubheader',margin: [ 0, 10, 0, 5 ] });
+                    
+                    for(let atributo of grupo.atributos){
+                        //Seleccionó Atributo?
+                        if(checkStatus[`E_${etapa.id}-G_${grupo.id}-A_${atributo.id}`]){
+                          //Obtengo InformacionGuardada de Atributo
+                          let stringUbicacionAtrib = JSON.stringify(this.interaccionSchemaConData.ubicacionAbsolutaDeAtributo(atributo.ubicacion,atributo.id));
+                          let datoGuardado : InformacionGuardada | null = null;
+                          for(let infoGuardada of versionSeleccionada.datosGuardados!){
+                              if (JSON.stringify(infoGuardada.ubicacionAtributo) === stringUbicacionAtrib){
+                                  datoGuardado = infoGuardada;
+                                  break;
+                              }
+                          }
+      
+                          //Imprimo Herencia primero
+                          if (atributo.herencia){
+                              let [atributoHerencia, grupoHerencia, etapaHerencia] = this.interaccionSchemaConData.getAtributoHerencia(atributo.herencia,{idEtapa:atributo.ubicacion.idEtapa,idGrupo:atributo.ubicacion.idGrupo,idAtributo:atributo.id,idDato:null});
+                              if(atributoHerencia != null && grupoHerencia != null && etapaHerencia != null){
+                                  if(atributoHerencia.nombre == null){
+                                      atributoHerencia.nombre = atributo.nombre;
+                                  }
+                                  this.imprimirAtributo(atributoHerencia,datoGuardado,versionSeleccionada,checkStatus);
+                              }
+                          }
+      
+                          //Imprimo datos propios del Atributo
+                          if (atributo.filasDatos && !atributo.herencia){
+                              this.imprimirAtributo(atributo,datoGuardado,versionSeleccionada,checkStatus);
+                          }
                         }
                     }
-
-                    //Imprimo Herencia primero
-                    if (atributo.herencia){
-                        let [atributoHerencia, grupoHerencia, etapaHerencia] = this.interaccionSchemaConData.getAtributoHerencia(atributo.herencia,{idEtapa:atributo.ubicacion.idEtapa,idGrupo:atributo.ubicacion.idGrupo,idAtributo:atributo.id,idDato:null});
-                        if(atributoHerencia != null && grupoHerencia != null && etapaHerencia != null){
-                            if(atributoHerencia.nombre == null){
-                                atributoHerencia.nombre = atributo.nombre;
-                            }
-                            this.imprimirAtributo(atributoHerencia,datoGuardado,versionSeleccionada);
-                        }
-                    }
-
-                    //Imprimo datos propios del Atributo
-                    if (atributo.filasDatos && !atributo.herencia){
-                        this.imprimirAtributo(atributo,datoGuardado,versionSeleccionada);
-                    }
-                }
+                  }
+              }
             }
         }
         const pdf = pdfMake.createPdf(this.pdf);
         return pdf;
     }
 
-    imprimirAtributo(atributo:Atributo,datoGuardado : InformacionGuardada | null, versionSeleccionada:Version){
+    imprimirAtributo(atributo:Atributo,datoGuardado : InformacionGuardada | null, versionSeleccionada:Version,checkStatus: { [key: string]: boolean }){
         let tituloAtributo = "";
         if(atributo.nombre != null){
             tituloAtributo+= atributo.nombre;
@@ -172,12 +176,15 @@ export class ExportpdfComponent{
                         }
 
                         if(this.cumpleDependencia(dato.habilitadoSi,versionSeleccionada)){
-                            lineaAImprimir = this.obtenerStringDeDato(this.mapTipoInput.revGet(dato.tipo)!,index,null,dato,mapContenidoCondicional,versionSeleccionada,"");
-
-                            if (dato && dato.nombre){
-                                lineaAImprimir = dato.nombre + ": " + lineaAImprimir;
+                            //Seleccionó Dato?
+                            if(checkStatus[`E_${dato.ubicacion.idEtapa}-G_${dato.ubicacion.idGrupo}-A_${dato.ubicacion.idAtributo}-D_${dato.id}`]){
+                              lineaAImprimir = this.obtenerStringDeDato(this.mapTipoInput.revGet(dato.tipo)!,index,null,dato,mapContenidoCondicional,versionSeleccionada,"");
+  
+                              if (dato && dato.nombre){
+                                  lineaAImprimir = dato.nombre + ": " + lineaAImprimir;
+                              }
+                              this.pdf.content.push({text: lineaAImprimir ,style: 'body', preserveLeadingSpaces: true });
                             }
-                            this.pdf.content.push({text: lineaAImprimir ,style: 'body', preserveLeadingSpaces: true });
                         }
                     }
                 }
