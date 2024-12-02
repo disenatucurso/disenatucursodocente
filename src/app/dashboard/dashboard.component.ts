@@ -38,15 +38,15 @@ export class DashboardComponent implements OnInit {
         private modalService: NgbModal,
         public accionesCursosService: AccionesCursosService,
         public interaccionSchemaConData: Interaccion_Schema_Data
-    ){ 
+    ){
         this.esquema=this.initialSchemaService.defaultSchema!;
     }
 
 
     ngOnInit() {
-        
+
         this.initializeCheckStatus(this.esquema);
-        
+
         const palette = ["#c0392b","#2980b9","#27ae60","#708284"] //rojo, azul, verde, gris
         setTimeout(()=>{
             // tiene que estar en el timeout sino da undefined
@@ -280,11 +280,11 @@ export class DashboardComponent implements OnInit {
           //For Grupo
           etapa.grupos.forEach(grupo => {
             this.checkStatus[`E_${etapa.id}-G_${grupo.id}`] = true; // Inicializa grupo como marcado
-            this.checkStatus[`Eexp_${etapa.id}-Gexp_${grupo.id}`] = true; // Inicializa grupo como expandido
+            this.checkStatus[`Eexp_${etapa.id}-Gexp_${grupo.id}`] = false; // Inicializa grupo como expandido
             //For Atributo
             grupo.atributos.forEach(atributo => {
               this.checkStatus[`E_${etapa.id}-G_${grupo.id}-A_${atributo.id}`] = true; // Inicializa atributo como marcado
-              this.checkStatus[`Eexp_${etapa.id}-Gexp_${grupo.id}-Aexp_${atributo.id}`] = true; // Inicializa atributo como expandido
+              this.checkStatus[`Eexp_${etapa.id}-Gexp_${grupo.id}-Aexp_${atributo.id}`] = false; // Inicializa atributo como expandido
               let atributoCalculado:Atributo|null=null;
               //Cargo Datos de Herencia
               if (atributo.herencia){
@@ -299,7 +299,7 @@ export class DashboardComponent implements OnInit {
                 }
                 atributoCalculado=atributoHerencia;
               }
-              
+
               //For FilaDatos del Atributo Local (no Heredado)
               if(atributo.filasDatos!=null){
                   atributo.filasDatos.forEach(fila => {
@@ -402,7 +402,7 @@ export class DashboardComponent implements OnInit {
     }
     calculoAtributosDeGrupo(atributosGrupo:Atributo[]):Atributo[]{
         let atributosCalculados:Atributo[]=[];
-        
+
         for(let atributo of atributosGrupo){
             /*//Porque esto no anda?
             let calcFilaDatos:FilaDatos[] = this.calculoFilaDatosDeAtributo(atributo);
@@ -414,7 +414,7 @@ export class DashboardComponent implements OnInit {
                 const [atributoHerencia, grupoHerencia, etapaHerencia] = this.interaccionSchemaConData.getAtributoHerencia(atributo.herencia,{idEtapa:atributo.ubicacion.idEtapa,idGrupo:atributo.ubicacion.idGrupo,idAtributo:atributo.id,idDato:null});
                 atributoCalculado=atributoHerencia;
             }
-            
+
             //Cargo FilaDatos del Atributo Local (no Heredado)
             if(atributo.filasDatos!=null){
                 if(atributoCalculado!=null){
@@ -436,7 +436,7 @@ export class DashboardComponent implements OnInit {
             const [atributoHerencia, grupoHerencia, etapaHerencia] = this.interaccionSchemaConData.getAtributoHerencia(atributo.herencia,{idEtapa:atributo.ubicacion.idEtapa,idGrupo:atributo.ubicacion.idGrupo,idAtributo:atributo.id,idDato:null});
             atributoCalculado=atributoHerencia;
         }
-        
+
         //Cargo FilaDatos del Atributo Local (no Heredado)
         if(atributo.filasDatos!=null){
             if(atributoCalculado!=null){
