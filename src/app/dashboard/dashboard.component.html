@@ -1,4 +1,4 @@
-<!-- cabezal -->
+<!-- CABEZAL -->
 <header *ngIf="this.initialSchemaService.loadedData" class="container d-flex flex-row border-bottom justify-content-between">
     <div class="d-flex flex-row align-items-center">
         <i class="bi bi-mortarboard-fill p-2" style="font-size: 1.8rem;"></i>
@@ -12,7 +12,7 @@
     </div>
 </header>
 
-<!-- zona del grafo -->
+<!-- ZONA GRAFO -->
 <div class="chart-container" style="max-width: 1000px; margin: auto; left:40px;">
     <div id="triangle" class="triangle">
         <div class="triangle-container">
@@ -22,15 +22,15 @@
     </div>
 </div>
 
+<!-- BOTON EXPORTAR -->
 <div *ngIf="this.initialSchemaService.loadedData">
-    <!-- botones -->
     <div class="container text-center mb-3">
         <div>
             <button class="btn btn-primary background-primary m-2 btn-outline-expand dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
             <i class="bi bi-cloud-arrow-down me-2"></i>EXPORTAR</button>
             <ul class="dropdown-menu">
                 <li><button class="dropdown-item" (click)="descargarCurso($event)">Exportar curso</button></li>
-                <li><button class="dropdown-item" (click)="descargarPDF($event)">Descargar cómo PDF</button></li>
+                <li><button class="dropdown-item" (click)="descargarPDF($event)">Descargar como PDF</button></li>
             </ul>
             <!-- por ahora no va el compartir -->
             <!-- <a class="btn btn-primary background-primary m-2" href="#!" role="button">
@@ -49,7 +49,7 @@
     </div>
 </div>
 
-<!-- -------------------- ZONA VERSIONES -------------------- -->
+<!--  BOTON VERSIONADO -->
 <div class="'container p-4" *ngIf="this.mostrarUIVersiones">
     <div class="card container p-4 mb-4">
         <h3 class="mb-4">Administrar Versiones</h3>
@@ -109,3 +109,97 @@
     </div>
 </div>
 <!-- ------------------ END ZONA CONTENIDO GRUPO ------------------ -->
+
+<!-- POPUP SELECTOR PDF -->
+<ng-template #selectorPdf let-modal>
+    <div class="modal-header">
+      <h4 class="modal-title">Seleccione contenido del PDF</h4>
+      <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
+    </div>
+    <div class="modal-body">
+        <div *ngFor="let etapa of esquema.etapas">
+            <div style="display: flex; align-items: center; margin-bottom: 4px;">
+                <!-- Botón para expandir/colapsar etapa -->
+                <button (click)="toggleExpandEtapa(etapa)"
+                    class="btn btn-outline-primary"
+                    style="height: 1.4em; width: 1.4em; padding: 0; margin-right: 8px;"
+                    [title]="isEtapaExpanded(etapa) ? 'Colapsar' : 'Expandir'"
+                >
+                    {{isEtapaExpanded(etapa) ? '▲' : '▼'}}
+                </button>
+
+                <!-- Checkbox para la etapa -->
+                <input
+                    style="margin-right: 4px;"
+                    type="checkbox"
+                    [checked]="isEtapaChecked(etapa)"
+                    (change)="onToggleEtapa(etapa, $event)"
+                    title="Imprimir/No Imprimir">
+                    {{etapa.nombre}}
+            </div>
+
+            <div *ngIf="isEtapaExpanded(etapa)">
+                <div *ngFor="let grupo of etapa.grupos" style="margin-left: 40px;">
+                  <div style="display: flex; align-items: center; margin-bottom: 4px;">
+                    <!-- Botón para expandir/colapsar grupo -->
+                    <button (click)="toggleExpandGrupo(grupo)"
+                        class="btn btn-outline-primary"
+                        style="height: 1.4em; width: 1.4em; padding: 0; margin-right: 8px;"
+                        [title]="isGrupoExpanded(grupo) ? 'Colapsar' : 'Expandir'"
+                    >
+                        {{isGrupoExpanded(grupo) ? '▲' : '▼'}}
+                    </button>
+                    <!-- Checkbox para la grupo -->
+                    <input
+                      style="margin-right: 4px;"
+                      type="checkbox"
+                      [checked]="isGrupoChecked(grupo)"
+                      (change)="onToggleGrupo(grupo, $event)"
+                      title="Imprimir/No Imprimir">
+                        {{grupo.nombre}}
+                  </div>
+
+                  <div *ngIf="isGrupoExpanded(grupo)">
+                      <div *ngFor="let atributo of calculoAtributosDeGrupo(grupo.atributos)" style="margin-left: 40px;">
+                        <div style="display: flex; align-items: center; margin-bottom: 4px;">
+                            <!-- Botón para expandir/colapsar Atributo -->
+                            <button (click)="toggleExpandAtributo(atributo)"
+                                class="btn btn-outline-primary"
+                                style="height: 1.4em; width: 1.4em; padding: 0; margin-right: 8px;"
+                                [title]="isAtributoExpanded(atributo) ? 'Colapsar' : 'Expandir'"
+                            >
+                                {{isAtributoExpanded(atributo) ? '▲' : '▼'}}
+                            </button>
+                            <!-- Checkbox para la Atributo -->
+                            <input
+                                style="margin-right: 4px;"
+                                type="checkbox"
+                                [checked]="isAtributoChecked(atributo)"
+                                (change)="onToggleAtributo(atributo, $event)"
+                                title="Imprimir/No Imprimir">
+                                {{ atributo.nombre ? atributo.nombre : '(Sin nombre)' }}
+                        </div>
+
+                        <div *ngIf="isAtributoExpanded(atributo)">
+                            <div *ngFor="let fila of atributo.filasDatos" style="margin-left: 60px;">
+                              <div *ngFor="let dato of fila.datos">
+                                <input
+                                  type="checkbox"
+                                  [checked]="isDatoChecked(dato)"
+                                  (change)="onToggleDato(dato, $event)"
+                                  title="Imprimir/No Imprimir">
+                                  {{ dato.nombre ? dato.nombre : '(Sin nombre)' }}
+                              </div>
+                            </div>
+                        </div>
+                      </div>
+                  </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-outline-gray" (click)="modal.dismiss('dismiss')">Cerrar</button>
+        <button type="button" class="btn btn-primary" (click)="modal.close('close')">Generar PDF</button>
+    </div>
+</ng-template>

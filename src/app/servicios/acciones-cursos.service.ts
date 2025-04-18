@@ -8,16 +8,16 @@ import { Injectable } from '@angular/core';
   providedIn: 'root',
 })
 export class AccionesCursosService {
-    impactarCambios:boolean = false;
+    //impactarCambios:boolean = false;
 
     constructor(private modalService: NgbModal, private router: Router, 
         public initialSchemaService : InitialSchemaLoaderService) {}
     
-    setImpactarCambios(value: boolean){
+    /*setImpactarCambios(value: boolean){
       this.impactarCambios = value;
-    }
+    }*/
 
-    initDatosGuardados(): any[] | undefined {
+    /*initDatosGuardados(): any[] | undefined {
         const datos = this.initialSchemaService.defaultSchema?.etapas[0].grupos
           // .map((etapa) => etapa.grupos)
           // .flat()
@@ -50,9 +50,9 @@ export class AccionesCursosService {
               })
             : null
         );
-    }
+    }*/
     
-    async obtenerCurso(id: number) {
+    /*async obtenerCurso(id: number) {
         let headers = new Headers();
         headers.append('Accept', 'application/json');
     
@@ -72,7 +72,7 @@ export class AccionesCursosService {
             alert.classList.add('show')
           console.error(e);
         }
-    }
+    }*/
     
     async modificarCurso() {
         const curso : SchemaSavedData | undefined = this.initialSchemaService.loadedData;
@@ -123,9 +123,9 @@ export class AccionesCursosService {
       } catch (e) {
         console.error(e);
       }
-  }
+    }
     
-    async listarCursos() {
+    /*async listarCursos() {
         let headers = new Headers();
         headers.append('Accept', 'application/json');
     
@@ -145,5 +145,5 @@ export class AccionesCursosService {
             alert.classList.add('show')
           console.error(e);
         }
-    }
+    }*/
 }

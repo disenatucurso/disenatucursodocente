@@ -741,7 +741,7 @@ export class HomeComponent {
     }
   }
 
-  async listarCursos() {
+  /*async listarCursos() {
     let headers = new Headers();
     headers.append('Accept', 'application/json');
 
@@ -761,7 +761,7 @@ export class HomeComponent {
         alert.classList.add('show')
       console.error(e);
     }
-  }
+  }*/
 
   @HostListener("click", ["$event"])
   public onClick(event: any): void {
