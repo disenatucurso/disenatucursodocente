@@ -11,12 +11,14 @@ import { InitialSchemaLoaderService } from '../servicios/initial-schema-loader.s
 export class ModalChangePasswordComponent implements OnInit {
   @Input() title: string = 'Cambiar Contraseña';
   @Input() body: string = '';
-
   @Input() urlServidor: string = '';  // Recibe la URL del servidor
   @Input() token: string = '';        // Recibe el token de autenticación
 
   currentPassword: string = '';
   newPassword: string = '';
+
+  showAlert: boolean = false;
+  alertMessage: string = '';
 
   constructor(
     public activeModal: NgbActiveModal,
@@ -25,7 +27,6 @@ export class ModalChangePasswordComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    // Lógica si es necesario cargar algo al inicio
     if (!this.urlServidor || !this.token) {
       console.error('No se ha recibido la URL del servidor o el token.');
     }
@@ -38,7 +39,9 @@ export class ModalChangePasswordComponent implements OnInit {
 
   async changePassword(): Promise<void> {
     if (!this.currentPassword || !this.newPassword) {
-      alert('Por favor, complete ambos campos.');
+      this.alertMessage = 'Por favor, complete ambos campos.';
+      this.showAlert = true;
+      this.scrollToTop();
       return;
     }
 
@@ -60,19 +63,27 @@ export class ModalChangePasswordComponent implements OnInit {
       });
 
       if (response.ok) {
-        console.log(response)
+        console.log(response);
         this.activeModal.close('Password changed');
       } else {
         console.log('Ha ocurrido un error:', response.status);
-        alert('Error al cambiar la contraseña.');
+        this.alertMessage = 'Error al cambiar la contraseña.';
+        this.showAlert = true;
+        this.scrollToTop();
       }
     } catch (error) {
       console.error('Error al realizar la solicitud:', error);
-      alert('Error al cambiar la contraseña.');
+      this.alertMessage = 'Error al cambiar la contraseña.';
+      this.showAlert = true;
+      this.scrollToTop();
     }
   }
 
   reject() {
     this.activeModal.dismiss('Cancelar');
+  }
+
+  scrollToTop() {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 }

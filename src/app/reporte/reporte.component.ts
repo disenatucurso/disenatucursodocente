@@ -13,50 +13,55 @@ import { GrupoDatoFijo } from '../modelos/schema.model';
 import { InformacionGuardada, SchemaSavedData, Version } from '../modelos/schemaData.model';
 import { InitialSchemaLoaderService } from '../servicios/initial-schema-loader.service';
 
-
 @Component({
-    selector: 'app-reporte',
-    templateUrl: './reporte.component.html',
-    styleUrls: ['./reporte.component.css'],
+  selector: 'app-reporte',
+  templateUrl: './reporte.component.html',
+  styleUrls: ['./reporte.component.css'],
 })
 export class ReporteComponent {
-    pdf: any;
-    title = 'DisenaTuCursoDocente';
-    token:string='';
-    urlServidor:string='';
-    titulo:string='';
-    descripcion:string='';
-    categoria:string='';
+  pdf: any;
+  title = 'DisenaTuCursoDocente';
+  token: string = '';
+  urlServidor: string = '';
+  titulo: string = '';
+  descripcion: string = '';
+  categoria: string = '';
 
-    constructor(private modalService: NgbModal, private router: Router,
-      public initialSchemaService : InitialSchemaLoaderService,
-      private route: ActivatedRoute) {}
+  showAlert: boolean = false;
+  alertMessage: string = '';
 
-    ngOnInit(): void {
-      // Recuperar los parámetros de la URL
-      this.route.queryParams.subscribe(params => {
-        this.token = params['token'];
-        this.urlServidor = params['servidor'];
-        console.log('Token:', this.token);
-        console.log('urlServidor:', this.urlServidor);
-      });
-      //remuevo el mensaje de error que se carga por defecto, se muestra poniendole la clase .show
-      const alert = document.querySelector('ngb-alert')
-      if(alert)
-        alert.classList.remove('show')
-    }
+  constructor(
+    private modalService: NgbModal,
+    private router: Router,
+    public initialSchemaService: InitialSchemaLoaderService,
+    private route: ActivatedRoute
+  ) {}
 
-    async enviarReporte(event: Event): Promise<void> {
-      event.preventDefault(); // Evita que el formulario se envíe automáticamente
+  ngOnInit(): void {
+    this.route.queryParams.subscribe(params => {
+      this.token = params['token'];
+      this.urlServidor = params['servidor'];
+      console.log('Token:', this.token);
+      console.log('urlServidor:', this.urlServidor);
+    });
 
-      // Aquí puedes acceder a los valores de los campos
-      console.log("Título:", this.titulo);
-      console.log("Descripción:", this.descripcion);
-      console.log("Categoría:", this.categoria);
-      console.log("token:", this.token);
-      // Puedes hacer más aquí, como enviar los datos a través de un servicio
+    const alert = document.querySelector('ngb-alert');
+    if (alert) alert.classList.remove('show');
+  }
 
-    const requestBody = { titulo: this.titulo, descripcion: this.descripcion, categoria: this.categoria};
+  async enviarReporte(event: Event): Promise<void> {
+    event.preventDefault();
+
+    console.log("Título:", this.titulo);
+    console.log("Descripción:", this.descripcion);
+    console.log("Categoría:", this.categoria);
+    console.log("token:", this.token);
+
+    const requestBody = {
+      titulo: this.titulo,
+      descripcion: this.descripcion,
+      categoria: this.categoria
+    };
     const apiUrl = this.urlServidor + '/api/nuevaIncidencia';
 
     try {
@@ -70,42 +75,39 @@ export class ReporteComponent {
       });
 
       if (response.ok) {
-        // Si la solicitud fue exitosa, extraer el token de la respuesta
         const responseData = await response.json();
         console.log('Incidencia ', responseData);
 
-        var formIncidencia = document.getElementById('form-incidencia');
-        var empty = document.getElementById('empty-ok');
-        var textoIncidente = document.getElementById('texto-incidente');
+        const formIncidencia = document.getElementById('form-incidencia');
+        const empty = document.getElementById('empty-ok');
+        const textoIncidente = document.getElementById('texto-incidente');
 
-
-        // Oculta el elemento cambiando su estilo
-        if (formIncidencia)
-          formIncidencia.style.display = 'none';
-        // Oculta el elemento cambiando su estilo
-        if (empty){
+        if (formIncidencia) formIncidencia.style.display = 'none';
+        if (empty) {
           empty.style.display = 'block';
           if (textoIncidente)
-            textoIncidente.innerText += ' ' + responseData.idIncidencia
+            textoIncidente.innerText += ' ' + responseData.idIncidencia;
         }
-
-
       } else {
-        // Si la solicitud no fue exitosa, mostrar un mensaje de error
         console.log('Ha ocurrido un error:', response.status);
-        console.log('Ha ocurrido un error:', requestBody);
-        alert("Error al crear la incidencia. Espere unos minutos y vuelva a intentar.");
+        this.alertMessage = "Error al crear la incidencia. Espere unos minutos y vuelva a intentar.";
+        this.showAlert = true;
+        this.scrollToTop();
       }
     } catch (error) {
-      // Manejar errores de la solicitud
-      console.error('Error al crear la incidencia. Espere unos minutos y vuelva a intentar.', error);
-      alert("Error al crear la incidencia. Espere unos minutos y vuelva a intentar.");
+      console.error('Error al crear la incidencia:', error);
+      this.alertMessage = "Error al crear la incidencia. Espere unos minutos y vuelva a intentar.";
+      this.showAlert = true;
+      this.scrollToTop();
     }
-    }
-
-    goHome(){
-      this.initialSchemaService.loadedData = undefined
-      this.router.navigate(['/']);
   }
 
+  goHome() {
+    this.initialSchemaService.loadedData = undefined;
+    this.router.navigate(['/']);
+  }
+
+  scrollToTop() {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
 }
