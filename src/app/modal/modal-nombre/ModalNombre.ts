@@ -15,11 +15,14 @@ export class ModalNombreComponent implements OnInit {
   @Output() salida: string[] = [];
   isInputValid: boolean = false;
 
-  constructor(public activeModal: NgbActiveModal) { }
+  showAlert: boolean = false;       // Controla si se muestra la alerta
+  alertMessage: string = '';        // Mensaje de alerta a mostrar
+
+  constructor(public activeModal: NgbActiveModal) {}
 
   ngOnInit(): void {
-    console.log(this.comentariosPrivados)
-    this.body = 'El nombre ingresado aquí será usando para identificarlo y registrarlo como propietario de sus cursos.'
+    console.log(this.comentariosPrivados);
+    this.body = 'El nombre ingresado aquí será usado para identificarlo y registrarlo como propietario de sus cursos.';
   }
 
   onInputChange() {
@@ -31,18 +34,30 @@ export class ModalNombreComponent implements OnInit {
   }
 
   resolve() {
+    this.salida = []; // Limpia la salida por si el usuario volvió atrás
+
     for (let i = 0; i < this.inputDisclaimer.length; i++) {
       let inputValue: HTMLInputElement | null;
       inputValue = document.querySelector("#input-content_" + i);
       if (inputValue && inputValue.value) {
-        this.salida.push(inputValue.value)
+        this.salida.push(inputValue.value);
       }
     }
 
     if (this.isInputValid) {
       this.activeModal.close(this.salida);
-    }else{
-      alert("Debe ingresar su nombre.")
+    } else {
+      this.alertMessage = 'Debe ingresar su nombre.';
+      this.showAlert = true;
+      this.scrollToTop();
     }
+  }
+
+  reject() {
+    this.activeModal.dismiss('Cancelar');
+  }
+
+  scrollToTop() {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 }
